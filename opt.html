@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1337 OPTIC - Studio 3D Pro 2026</title>
+    <title>1337 OPTIC - Studio 3D Pro</title>
     
-    <!-- Tailwind CSS v4.0 -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Three.js r177 (WebGPU Ready) -->
+    <!-- Three.js r177 -->
     <script type="importmap">
     {
         "imports": {
@@ -18,227 +18,138 @@
     }
     </script>
     
-    <!-- GSAP 3.13 -->
+    <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
-    
-    <!-- Lenis Smooth Scroll -->
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Google Fonts - Variable Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-    
     <style>
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.15);
-            --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.5);
-            --surface: #0a0a0a;
-            --surface-elevated: #141414;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html {
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--surface);
+            background: #050508;
             color: #ffffff;
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-        
-        .font-display {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        
-        /* Liquid Glass Effect 2026 */
-        .liquid-glass {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(40px) saturate(200%);
-            -webkit-backdrop-filter: blur(40px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                0 0 0 1px rgba(255, 255, 255, 0.05);
-            position: relative;
             overflow: hidden;
         }
         
-        .liquid-glass::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.1), 
-                transparent);
-            transition: left 0.7s;
+        /* Liquid Glass Effect */
+        .liquid-glass {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
         }
         
-        .liquid-glass:hover::before {
-            left: 100%;
+        .liquid-glass:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
         }
         
-        /* Neumorphism + Glassmorphism Hybrid */
-        .neo-glass {
-            background: linear-gradient(145deg, 
-                rgba(30, 30, 35, 0.8), 
-                rgba(15, 15, 20, 0.9));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 
-                20px 20px 60px rgba(0, 0, 0, 0.5),
-                -20px -20px 60px rgba(255, 255, 255, 0.02),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-        }
-        
-        /* Kinetic Typography */
-        .kinetic-text {
-            font-variation-settings: 'wght' 700;
-            animation: fontWeight 4s ease-in-out infinite;
-        }
-        
-        @keyframes fontWeight {
-            0%, 100% { font-variation-settings: 'wght' 700; }
-            50% { font-variation-settings: 'wght' 300; }
-        }
-        
-        /* Gradient Text Animation */
+        /* Gradient Text */
         .gradient-text {
-            background: linear-gradient(135deg, 
-                #3b82f6 0%, 
-                #8b5cf6 25%, 
-                #ec4899 50%, 
-                #8b5cf6 75%, 
-                #3b82f6 100%);
-            background-size: 400% 400%;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: gradientShift 8s ease infinite;
         }
         
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Color Orbs */
+        .color-orb {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         
-        /* Magnetic Button Effect */
-        .magnetic-btn {
-            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        .color-orb:hover { transform: scale(1.15); }
+        .color-orb.active { 
+            border-color: #3b82f6; 
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.3), 0 0 20px rgba(59,130,246,0.4);
         }
         
-        /* 3D Card Tilt */
-        .tilt-card {
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
+        /* Material Cards */
+        .material-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
-        /* Smooth Scroll Container */
-        .smooth-scroll {
-            will-change: transform;
+        .material-card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(59,130,246,0.3);
+            transform: translateX(5px);
         }
         
-        /* Custom Cursor */
-        .custom-cursor {
+        .material-card.active {
+            background: rgba(59,130,246,0.1);
+            border-color: #3b82f6;
+        }
+        
+        /* Side Panel */
+        .side-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            width: 420px;
+            background: rgba(10,10,12,0.9);
+            backdrop-filter: blur(30px);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            transform: translateX(100%);
+            transition: transform 0.4s ease;
+            z-index: 100;
+            overflow-y: auto;
+            padding: 32px;
+        }
+        
+        .side-panel.open { transform: translateX(0); }
+        
+        /* Range Slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
             width: 20px;
             height: 20px;
-            border: 2px solid rgba(59, 130, 246, 0.8);
             border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(59,130,246,0.5);
+        }
+        
+        /* Toast */
+        .toast {
             position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.15s, width 0.3s, height 0.3s;
-            mix-blend-mode: difference;
+            bottom: 32px;
+            right: 32px;
+            background: rgba(20,20,25,0.95);
+            border: 1px solid rgba(59,130,246,0.3);
+            padding: 16px 24px;
+            border-radius: 12px;
+            transform: translateX(400px);
+            transition: transform 0.4s ease;
+            z-index: 1000;
         }
         
-        .custom-cursor.hover {
-            width: 60px;
-            height: 60px;
-            background: rgba(59, 130, 246, 0.1);
-        }
+        .toast.show { transform: translateX(0); }
         
-        /* Loading Screen Modern */
-        .loader-container {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease, visibility 0.8s;
-        }
-        
-        .loader-container.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-        
-        .loader-ring {
-            width: 120px;
-            height: 120px;
-            position: relative;
-        }
-        
-        .loader-ring svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-        
-        .loader-ring circle {
-            fill: none;
-            stroke-width: 3;
-            stroke-linecap: round;
-        }
-        
-        .loader-ring .track {
-            stroke: rgba(255, 255, 255, 0.1);
-        }
-        
-        .loader-ring .progress {
-            stroke: url(#gradient);
-            stroke-dasharray: 339.292;
-            stroke-dashoffset: 339.292;
-            transition: stroke-dashoffset 0.3s;
-        }
-        
-        /* Scroll Progress */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            z-index: 9999;
-            transform-origin: left;
-            transform: scaleX(0);
-        }
-        
-        /* WebGL Canvas */
+        /* 3D Canvas - IMPORTANT: z-index et visibility */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -248,491 +159,247 @@
             z-index: 1;
         }
         
-        /* UI Layer */
+        #canvas-container canvas {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        /* UI Layer - au dessus du canvas */
         .ui-layer {
             position: relative;
             z-index: 10;
             pointer-events: none;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
-        .ui-layer > * {
-            pointer-events: auto;
-        }
-        
-        /* Side Panel Modern */
-        .side-panel {
-            position: fixed;
-            right: 0;
-            top: 0;
-            height: 100dvh;
-            width: 480px;
-            background: rgba(10, 10, 12, 0.85);
-            backdrop-filter: blur(40px) saturate(200%);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateX(100%);
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            z-index: 100;
-            overflow-y: auto;
-            padding: 2rem;
-        }
-        
-        .side-panel.open {
-            transform: translateX(0);
-        }
-        
-        /* Color Orb Buttons */
-        .color-orb {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.3),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
-        }
-        
-        .color-orb::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 30%, 
-                rgba(255, 255, 255, 0.4), 
-                transparent 70%);
-        }
-        
-        .color-orb:hover {
-            transform: scale(1.15) rotate(10deg);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.4),
-                0 0 0 4px rgba(59, 130, 246, 0.3);
-        }
-        
-        .color-orb.active {
-            border-color: #3b82f6;
-            box-shadow: 
-                0 0 0 4px rgba(59, 130, 246, 0.4),
-                0 0 30px rgba(59, 130, 246, 0.5);
-        }
-        
-        /* Range Slider 2026 */
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: linear-gradient(90deg, 
-                rgba(59, 130, 246, 0.2), 
-                rgba(139, 92, 246, 0.2));
-            outline: none;
-            position: relative;
-        }
-        
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            cursor: pointer;
-            box-shadow: 
-                0 4px 15px rgba(59, 130, 246, 0.5),
-                0 0 0 4px rgba(59, 130, 246, 0.2);
-            transition: all 0.3s;
-        }
-        
-        input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 
-                0 6px 20px rgba(59, 130, 246, 0.6),
-                0 0 0 6px rgba(59, 130, 246, 0.3);
-        }
-        
-        /* Material Cards */
-        .material-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 1.25rem;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .material-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-                rgba(59, 130, 246, 0.15), 
-                transparent 40%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .material-card:hover::before {
-            opacity: 1;
-        }
-        
-        .material-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(59, 130, 246, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .material-card.active {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-        }
+        .ui-layer > * { pointer-events: auto; }
         
         /* Preset Grid */
         .preset-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            gap: 12px;
         }
         
         .preset-item {
             aspect-ratio: 16/10;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.4s;
             border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
         
-        .preset-item:hover {
-            transform: scale(1.05);
-            border-color: rgba(59, 130, 246, 0.5);
-        }
+        .preset-item:hover { transform: scale(1.05); }
+        .preset-item.active { border-color: #3b82f6; }
         
-        .preset-item.active {
-            border-color: #3b82f6;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-        }
-        
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: rgba(20, 20, 25, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1.25rem 1.75rem;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transform: translateX(150%);
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            z-index: 1000;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        
-        .toast.show {
-            transform: translateX(0);
-        }
-        
-        /* Floating Elements */
-        .float-element {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        /* Text Reveal Animation */
-        .reveal-text {
-            opacity: 0;
-            transform: translateY(30px);
-            filter: blur(10px);
-        }
-        
-        .reveal-text.revealed {
-            opacity: 1;
-            transform: translateY(0);
-            filter: blur(0);
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        
-        /* Holographic Effect */
-        .holographic {
-            background: linear-gradient(135deg, 
-                rgba(59, 130, 246, 0.1),
-                rgba(139, 92, 246, 0.1),
-                rgba(236, 72, 153, 0.1));
-            background-size: 200% 200%;
-            animation: holographicShift 4s ease infinite;
-        }
-        
-        @keyframes holographicShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
     </style>
 </head>
 <body>
 
-    <!-- Custom Cursor -->
-    <div class="custom-cursor" id="cursor"></div>
-    
-    <!-- Scroll Progress -->
-    <div class="scroll-progress" id="scroll-progress"></div>
-
-    <!-- Loading Screen -->
-    <div id="loader" class="loader-container">
-        <div class="loader-ring">
-            <svg viewBox="0 0 120 120">
-                <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#3b82f6" />
-                        <stop offset="100%" stop-color="#8b5cf6" />
-                    </linearGradient>
-                </defs>
-                <circle class="track" cx="60" cy="60" r="54"/>
-                <circle class="progress" id="progress-circle" cx="60" cy="60" r="54"/>
-            </svg>
-        </div>
-        <div class="mt-8 text-center">
-            <div class="text-2xl font-display font-bold mb-2 kinetic-text">1337 OPTIC</div>
-            <div class="text-sm text-gray-500 tracking-widest uppercase">Chargement Studio 3D</div>
-        </div>
-        <div class="mt-6 w-64 h-1 bg-gray-800 rounded-full overflow-hidden">
-            <div id="progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-purple-500 w-0 transition-all duration-300"></div>
-        </div>
-        <div class="mt-4 text-xs text-gray-600 font-mono" id="loading-text">Initialisation WebGPU...</div>
-    </div>
-
-    <!-- WebGL Canvas -->
+    <!-- 3D Canvas Container -->
     <div id="canvas-container"></div>
 
     <!-- UI Layer -->
-    <div class="ui-layer min-h-screen flex flex-col">
+    <div class="ui-layer">
         
         <!-- Header -->
-        <header class="fixed top-0 left-0 right-0 z-50 p-6">
-            <div class="liquid-glass rounded-2xl px-6 py-4 flex justify-between items-center mx-auto max-w-7xl">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30 float-element">
-                        <i data-lucide="glasses" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-display font-bold tracking-tight">1337 OPTIC</h1>
-                        <p class="text-xs text-gray-400 uppercase tracking-[0.2em]">Studio 3D Pro</p>
-                    </div>
+        <header class="flex justify-between items-center p-6">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 liquid-glass rounded-xl flex items-center justify-center">
+                    <i data-lucide="glasses" class="w-6 h-6 text-blue-400"></i>
                 </div>
-                
-                <nav class="hidden md:flex items-center gap-1">
-                    <button onclick="toggleAutoRotate()" id="btn-rotate" class="magnetic-btn liquid-glass px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/10 transition-colors">
-                        <i data-lucide="refresh-cw" class="w-4 h-4 text-blue-400"></i>
-                        <span>Auto-Rotate</span>
-                    </button>
-                    <button onclick="toggleControls()" class="magnetic-btn liquid-glass px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/10 transition-colors ml-2">
-                        <i data-lucide="sliders" class="w-4 h-4 text-purple-400"></i>
-                        <span>Configurer</span>
-                    </button>
-                    <button onclick="resetView()" class="magnetic-btn liquid-glass px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/10 transition-colors ml-2">
-                        <i data-lucide="maximize" class="w-4 h-4 text-green-400"></i>
-                        <span>Reset</span>
-                    </button>
-                </nav>
-                
-                <button onclick="toggleControls()" class="md:hidden liquid-glass p-3 rounded-xl">
-                    <i data-lucide="menu" class="w-5 h-5"></i>
+                <div>
+                    <h1 class="text-2xl font-bold font-['Space_Grotesk']">1337 OPTIC</h1>
+                    <p class="text-xs text-gray-400 uppercase tracking-widest">Studio 3D Pro</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="toggleAutoRotate()" id="btn-rotate" class="liquid-glass px-5 py-3 rounded-xl text-sm font-medium flex items-center gap-2">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 text-blue-400"></i>
+                    <span>Auto</span>
+                </button>
+                <button onclick="toggleControls()" class="liquid-glass px-5 py-3 rounded-xl text-sm font-medium flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-4 h-4 text-purple-400"></i>
+                    <span>Config</span>
+                </button>
+                <button onclick="resetView()" class="liquid-glass px-5 py-3 rounded-xl text-sm font-medium flex items-center gap-2">
+                    <i data-lucide="maximize" class="w-4 h-4 text-green-400"></i>
+                    <span>Reset</span>
                 </button>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 flex items-center px-6 lg:px-12 pt-32">
+        <main class="flex-1 flex items-center px-12">
             
-            <!-- Left Product Info -->
-            <div class="max-w-2xl space-y-8 relative z-10">
-                <div class="space-y-6 reveal-text">
-                    <div class="flex items-center gap-3 flex-wrap">
-                        <span class="px-4 py-1.5 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full border border-blue-500/30 backdrop-blur-sm">
-                            Nouveauté 2026
-                        </span>
-                        <span class="px-4 py-1.5 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full border border-purple-500/30 backdrop-blur-sm">
-                            Édition Limitée
-                        </span>
-                        <span class="px-4 py-1.5 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full border border-emerald-500/30 backdrop-blur-sm flex items-center gap-1">
-                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                            WebGPU Ready
-                        </span>
+            <div class="max-w-xl space-y-8">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full border border-blue-500/30">2026 EDITION</span>
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-bold rounded-full border border-purple-500/30">WEBGPU</span>
                     </div>
                     
-                    <h2 class="text-6xl lg:text-8xl font-display font-bold leading-[0.9]">
-                        <span class="block text-white">Aero</span>
-                        <span class="block gradient-text">Titanium X</span>
+                    <h2 class="text-7xl font-bold font-['Space_Grotesk'] leading-none">
+                        Aero<br>
+                        <span class="gradient-text">Titanium X</span>
                     </h2>
                     
-                    <p class="text-gray-400 text-lg lg:text-xl leading-relaxed max-w-lg backdrop-blur-sm">
+                    <p class="text-gray-400 text-lg max-w-md">
                         Monture aéronautique en titane grade 5 avec verres photochromiques 
-                        nanocéramique et traitement anti-reflet multicouche. 
-                        <span class="text-blue-400">Rendu WebGPU temps réel.</span>
+                        nanocéramique. Rendu 3D temps réel.
                     </p>
                 </div>
                 
-                <div class="flex items-center gap-8 reveal-text" style="transition-delay: 0.2s;">
+                <div class="flex items-center gap-8">
                     <div>
-                        <div class="text-5xl font-display font-bold text-white">2,450</div>
-                        <div class="text-sm text-gray-500 uppercase tracking-wider">MAD</div>
+                        <div class="text-4xl font-bold text-white">2,450</div>
+                        <div class="text-sm text-gray-500 uppercase">MAD</div>
                     </div>
-                    <button onclick="addToCart()" id="btn-cart" class="magnetic-btn group relative bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 hover:from-blue-500 hover:via-purple-500 hover:to-blue-500 text-white px-10 py-5 rounded-2xl font-semibold transition-all transform hover:scale-105 shadow-2xl shadow-blue-500/30 flex items-center gap-3 overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    <button onclick="addToCart()" id="btn-cart" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-8 py-4 rounded-xl font-semibold transition flex items-center gap-3">
                         <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                        <span>Ajouter au Panier</span>
+                        Ajouter au Panier
                     </button>
                 </div>
 
-                <!-- Specs Grid -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-8 reveal-text" style="transition-delay: 0.4s;">
-                    <div class="liquid-glass rounded-2xl p-5 tilt-card">
-                        <div class="text-3xl font-display font-bold text-white mb-1">12<span class="text-lg text-gray-500">g</span></div>
-                        <div class="text-xs text-gray-400 uppercase tracking-wider">Poids Total</div>
+                <!-- Specs -->
+                <div class="grid grid-cols-4 gap-4 pt-6">
+                    <div class="liquid-glass rounded-xl p-4 text-center">
+                        <div class="text-2xl font-bold">12<span class="text-sm text-gray-500">g</span></div>
+                        <div class="text-xs text-gray-400 uppercase mt-1">Poids</div>
                     </div>
-                    <div class="liquid-glass rounded-2xl p-5 tilt-card">
-                        <div class="text-3xl font-display font-bold text-white mb-1">Ti-<span class="text-lg text-gray-500">6Al-4V</span></div>
-                        <div class="text-xs text-gray-400 uppercase tracking-wider">Alliage Titane</div>
+                    <div class="liquid-glass rounded-xl p-4 text-center">
+                        <div class="text-2xl font-bold">Ti<span class="text-sm text-gray-500">-6Al</span></div>
+                        <div class="text-xs text-gray-400 uppercase mt-1">Alliage</div>
                     </div>
-                    <div class="liquid-glass rounded-2xl p-5 tilt-card">
-                        <div class="text-3xl font-display font-bold text-white mb-1">UV<span class="text-lg text-gray-500">400</span></div>
-                        <div class="text-xs text-gray-400 uppercase tracking-wider">Protection</div>
+                    <div class="liquid-glass rounded-xl p-4 text-center">
+                        <div class="text-2xl font-bold">UV<span class="text-sm text-gray-500">400</span></div>
+                        <div class="text-xs text-gray-400 uppercase mt-1">Protection</div>
                     </div>
-                    <div class="liquid-glass rounded-2xl p-5 tilt-card">
-                        <div class="text-3xl font-display font-bold text-white mb-1">8<span class="text-lg text-gray-500">K</span></div>
-                        <div class="text-xs text-gray-400 uppercase tracking-wider">Textures</div>
+                    <div class="liquid-glass rounded-xl p-4 text-center">
+                        <div class="text-2xl font-bold">8<span class="text-sm text-gray-500">K</span></div>
+                        <div class="text-xs text-gray-400 uppercase mt-1">Texture</div>
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="flex flex-wrap gap-3 pt-4 reveal-text" style="transition-delay: 0.6s;">
-                    <button onclick="dropPhysics()" class="magnetic-btn liquid-glass px-6 py-3 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/10 transition-colors">
+                <!-- Actions -->
+                <div class="flex gap-3 pt-4">
+                    <button onclick="dropPhysics()" class="liquid-glass px-5 py-3 rounded-xl text-sm flex items-center gap-2">
                         <i data-lucide="apple" class="w-4 h-4 text-orange-400"></i>
-                        Test Physique
+                        Physics
                     </button>
-                    <button onclick="explodeView()" class="magnetic-btn liquid-glass px-6 py-3 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/10 transition-colors">
+                    <button onclick="explodeView()" class="liquid-glass px-5 py-3 rounded-xl text-sm flex items-center gap-2">
                         <i data-lucide="box" class="w-4 h-4 text-purple-400"></i>
-                        Vue Éclatée
+                        Explode
                     </button>
-                    <button onclick="toggleWireframe()" class="magnetic-btn liquid-glass px-6 py-3 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/10 transition-colors">
-                        <i data-lucide="network" class="w-4 h-4 text-cyan-400"></i>
-                        Fil de Fer
-                    </button>
-                    <button onclick="toggleAR()" class="magnetic-btn liquid-glass px-6 py-3 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/10 transition-colors">
-                        <i data-lucide="camera" class="w-4 h-4 text-pink-400"></i>
-                        AR Mode
+                    <button onclick="toggleWireframe()" class="liquid-glass px-5 py-3 rounded-xl text-sm flex items-center gap-2">
+                        <i data-lucide="grid" class="w-4 h-4 text-cyan-400"></i>
+                        Wireframe
                     </button>
                 </div>
             </div>
 
         </main>
 
-        <!-- Bottom Environment Selector -->
-        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
+        <!-- Environment Selector -->
+        <div class="p-6 flex justify-center">
             <div class="liquid-glass rounded-2xl p-2 flex gap-2">
-                <button onclick="setEnvironment('studio')" class="env-btn active magnetic-btn px-5 py-3 rounded-xl text-sm font-medium transition flex items-center gap-2 bg-white/10 hover:bg-white/20">
+                <button onclick="setEnvironment('studio')" class="env-btn active px-5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 bg-white/10">
                     <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-400"></i>
-                    <span class="hidden sm:inline">Studio Pro</span>
+                    Studio
                 </button>
-                <button onclick="setEnvironment('sunset')" class="env-btn magnetic-btn px-5 py-3 rounded-xl text-sm font-medium transition flex items-center gap-2 hover:bg-white/10">
+                <button onclick="setEnvironment('sunset')" class="env-btn px-5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/5">
                     <i data-lucide="sun" class="w-4 h-4 text-orange-400"></i>
-                    <span class="hidden sm:inline">Golden Hour</span>
+                    Sunset
                 </button>
-                <button onclick="setEnvironment('night')" class="env-btn magnetic-btn px-5 py-3 rounded-xl text-sm font-medium transition flex items-center gap-2 hover:bg-white/10">
+                <button onclick="setEnvironment('night')" class="env-btn px-5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/5">
                     <i data-lucide="moon" class="w-4 h-4 text-blue-400"></i>
-                    <span class="hidden sm:inline">Night Mode</span>
+                    Night
                 </button>
-                <button onclick="setEnvironment('neon')" class="env-btn magnetic-btn px-5 py-3 rounded-xl text-sm font-medium transition flex items-center gap-2 hover:bg-white/10">
+                <button onclick="setEnvironment('neon')" class="env-btn px-5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-white/5">
                     <i data-lucide="zap" class="w-4 h-4 text-pink-400"></i>
-                    <span class="hidden sm:inline">Cyberpunk</span>
+                    Neon
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Side Controls Panel -->
+    <!-- Side Panel -->
     <aside id="side-panel" class="side-panel">
         <div class="space-y-8">
-            <!-- Header -->
-            <div class="flex justify-between items-center pb-6 border-b border-white/10">
+            <div class="flex justify-between items-center pb-4 border-b border-white/10">
                 <div>
-                    <h3 class="text-2xl font-display font-bold">Configuration</h3>
-                    <p class="text-sm text-gray-500 mt-1">Personnalisez chaque détail</p>
+                    <h3 class="text-xl font-bold font-['Space_Grotesk']">Configuration</h3>
+                    <p class="text-sm text-gray-500">Personnalisation 3D</p>
                 </div>
-                <button onclick="toggleControls()" class="magnetic-btn w-10 h-10 rounded-full liquid-glass flex items-center justify-center hover:bg-white/10 transition">
+                <button onclick="toggleControls()" class="w-10 h-10 rounded-full liquid-glass flex items-center justify-center">
                     <i data-lucide="x" class="w-5 h-5 text-gray-400"></i>
                 </button>
             </div>
 
             <!-- Presets -->
-            <div class="space-y-4">
-                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Préréglages</label>
+            <div class="space-y-3">
+                <label class="text-xs font-semibold text-gray-400 uppercase">Préréglages</label>
                 <div class="preset-grid">
-                    <div class="preset-item active holographic" onclick="applyPreset('classic', this)">
-                        <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black"></div>
-                        <div class="absolute bottom-2 left-2 text-xs font-medium">Classique</div>
+                    <div class="preset-item active" onclick="applyPreset('classic', this)">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-black"></div>
+                        <span class="absolute bottom-2 left-2 text-xs font-medium">Classique</span>
                     </div>
                     <div class="preset-item" onclick="applyPreset('gold', this)">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-600 to-yellow-900"></div>
-                        <div class="absolute bottom-2 left-2 text-xs font-medium">Executive</div>
+                        <span class="absolute bottom-2 left-2 text-xs font-medium">Gold</span>
                     </div>
                     <div class="preset-item" onclick="applyPreset('sport', this)">
-                        <div class="absolute inset-0 bg-gradient-to-br from-red-600 to-red-900"></div>
-                        <div class="absolute bottom-2 left-2 text-xs font-medium">Sport</div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-red-600 to-rose-900"></div>
+                        <span class="absolute bottom-2 left-2 text-xs font-medium">Sport</span>
                     </div>
                     <div class="preset-item" onclick="applyPreset('cyber', this)">
                         <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-blue-900"></div>
-                        <div class="absolute bottom-2 left-2 text-xs font-medium">Cyber</div>
+                        <span class="absolute bottom-2 left-2 text-xs font-medium">Cyber</span>
                     </div>
                 </div>
             </div>
 
             <!-- Frame Colors -->
-            <div class="space-y-4">
-                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Couleur Monture</label>
+            <div class="space-y-3">
+                <label class="text-xs font-semibold text-gray-400 uppercase">Couleur Monture</label>
                 <div class="flex flex-wrap gap-3">
-                    <div class="color-orb active bg-gradient-to-br from-gray-900 via-gray-800 to-black" onclick="changeFrameColor(0x1a1a1a, this)" title="Midnight Black"></div>
-                    <div class="color-orb bg-gradient-to-br from-yellow-400 via-yellow-600 to-yellow-800" onclick="changeFrameColor(0xd4af37, this)" title="Gold Premium"></div>
-                    <div class="color-orb bg-gradient-to-br from-gray-100 via-gray-300 to-gray-500" onclick="changeFrameColor(0xe5e7eb, this)" title="Silver Chrome"></div>
-                    <div class="color-orb bg-gradient-to-br from-amber-600 via-amber-800 to-amber-950" onclick="changeFrameColor(0x92400e, this)" title="Tortoise"></div>
-                    <div class="color-orb bg-gradient-to-br from-blue-500 via-blue-700 to-blue-900" onclick="changeFrameColor(0x1e40af, this)" title="Royal Blue"></div>
-                    <div class="color-orb bg-gradient-to-br from-rose-300 via-rose-500 to-rose-700" onclick="changeFrameColor(0xe11d48, this)" title="Rose Gold"></div>
-                    <div class="color-orb bg-gradient-to-br from-emerald-500 via-emerald-700 to-emerald-900" onclick="changeFrameColor(0x059669, this)" title="Racing Green"></div>
-                    <div class="color-orb bg-gradient-to-br from-purple-500 via-purple-700 to-purple-900" onclick="changeFrameColor(0x7c3aed, this)" title="Deep Purple"></div>
+                    <div class="color-orb active bg-gradient-to-br from-gray-900 to-black" onclick="changeFrameColor(0x1a1a1a, this)"></div>
+                    <div class="color-orb bg-gradient-to-br from-yellow-400 to-yellow-700" onclick="changeFrameColor(0xd4af37, this)"></div>
+                    <div class="color-orb bg-gradient-to-br from-gray-200 to-gray-500" onclick="changeFrameColor(0xc0c0c0, this)"></div>
+                    <div class="color-orb bg-gradient-to-br from-amber-700 to-amber-950" onclick="changeFrameColor(0x8b4513, this)"></div>
+                    <div class="color-orb bg-gradient-to-br from-blue-500 to-blue-900" onclick="changeFrameColor(0x1e40af, this)"></div>
+                    <div class="color-orb bg-gradient-to-br from-rose-400 to-rose-700" onclick="changeFrameColor(0xe11d48, this)"></div>
+                    <div class="color-orb bg-gradient-to-br from-emerald-500 to-emerald-900" onclick="changeFrameColor(0x059669, this)"></div>
+                    <div class="color-orb bg-gradient-to-br from-purple-500 to-purple-900" onclick="changeFrameColor(0x7c3aed, this)"></div>
                 </div>
             </div>
 
             <!-- Lens Types -->
-            <div class="space-y-4">
-                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Type de Verres</label>
-                <div class="space-y-3">
+            <div class="space-y-3">
+                <label class="text-xs font-semibold text-gray-400 uppercase">Type de Verres</label>
+                <div class="space-y-2">
                     <div class="material-card active" onclick="changeLensType('clear', this)">
-                        <div class="flex items-center gap-4 relative z-10">
-                            <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                                <i data-lucide="eye" class="w-5 h-5 text-blue-400"></i>
-                            </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="eye" class="w-5 h-5 text-blue-400"></i>
                             <div>
                                 <div class="font-medium text-sm">Transparent</div>
-                                <div class="text-xs text-gray-500">Vision claire classique</div>
+                                <div class="text-xs text-gray-500">Vision claire</div>
                             </div>
                         </div>
                     </div>
                     <div class="material-card" onclick="changeLensType('photochromic', this)">
-                        <div class="flex items-center gap-4 relative z-10">
-                            <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                                <i data-lucide="sun" class="w-5 h-5 text-amber-400"></i>
-                            </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="sun" class="w-5 h-5 text-amber-400"></i>
                             <div>
                                 <div class="font-medium text-sm">Photochromique</div>
                                 <div class="text-xs text-gray-500">Adaptatif lumière</div>
@@ -740,35 +407,20 @@
                         </div>
                     </div>
                     <div class="material-card" onclick="changeLensType('polarized', this)">
-                        <div class="flex items-center gap-4 relative z-10">
-                            <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
-                                <i data-lucide="glasses" class="w-5 h-5 text-orange-400"></i>
-                            </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="glasses" class="w-5 h-5 text-orange-400"></i>
                             <div>
                                 <div class="font-medium text-sm">Polarisé</div>
-                                <div class="text-xs text-gray-500">Anti-reflet total</div>
+                                <div class="text-xs text-gray-500">Anti-reflet</div>
                             </div>
                         </div>
                     </div>
                     <div class="material-card" onclick="changeLensType('mirrored', this)">
-                        <div class="flex items-center gap-4 relative z-10">
-                            <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-                                <i data-lucide="scan" class="w-5 h-5 text-cyan-400"></i>
-                            </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="scan" class="w-5 h-5 text-cyan-400"></i>
                             <div>
                                 <div class="font-medium text-sm">Miroir</div>
                                 <div class="text-xs text-gray-500">Style sportif</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="material-card" onclick="changeLensType('blueblock', this)">
-                        <div class="flex items-center gap-4 relative z-10">
-                            <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                                <i data-lucide="monitor" class="w-5 h-5 text-purple-400"></i>
-                            </div>
-                            <div>
-                                <div class="font-medium text-sm">Blue Blocker</div>
-                                <div class="text-xs text-gray-500">Protection écran</div>
                             </div>
                         </div>
                     </div>
@@ -776,82 +428,49 @@
             </div>
 
             <!-- Lens Tint -->
-            <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Teinte Verres</label>
-                    <span id="tint-value" class="text-xs text-blue-400 font-mono">0%</span>
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <label class="text-xs font-semibold text-gray-400 uppercase">Teinte</label>
+                    <span id="tint-value" class="text-xs text-blue-400">0%</span>
                 </div>
                 <input type="range" min="0" max="100" value="0" oninput="updateLensTint(this.value)">
-                <div class="flex justify-between text-xs text-gray-600">
-                    <span>Transparent</span>
-                    <span>Opaque</span>
-                </div>
             </div>
 
-            <!-- Material Finish -->
-            <div class="space-y-4">
-                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Finition Surface</label>
-                <div class="grid grid-cols-3 gap-3">
-                    <button class="material-card justify-center active" onclick="setFinish('glossy', this)">
-                        <div class="flex flex-col items-center gap-2 relative z-10">
-                            <div class="w-8 h-8 rounded-full bg-white/80 shadow-lg"></div>
-                            <span class="text-xs">Brillant</span>
-                        </div>
+            <!-- Finish -->
+            <div class="space-y-3">
+                <label class="text-xs font-semibold text-gray-400 uppercase">Finition</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button class="material-card text-center active" onclick="setFinish('glossy', this)">
+                        <div class="w-6 h-6 rounded-full bg-white/80 mx-auto mb-2"></div>
+                        <span class="text-xs">Brillant</span>
                     </button>
-                    <button class="material-card justify-center" onclick="setFinish('satin', this)">
-                        <div class="flex flex-col items-center gap-2 relative z-10">
-                            <div class="w-8 h-8 rounded-full bg-white/50 shadow-md"></div>
-                            <span class="text-xs">Satiné</span>
-                        </div>
+                    <button class="material-card text-center" onclick="setFinish('satin', this)">
+                        <div class="w-6 h-6 rounded-full bg-white/50 mx-auto mb-2"></div>
+                        <span class="text-xs">Satiné</span>
                     </button>
-                    <button class="material-card justify-center" onclick="setFinish('matte', this)">
-                        <div class="flex flex-col items-center gap-2 relative z-10">
-                            <div class="w-8 h-8 rounded-full bg-white/30 shadow-sm"></div>
-                            <span class="text-xs">Mat</span>
-                        </div>
+                    <button class="material-card text-center" onclick="setFinish('matte', this)">
+                        <div class="w-6 h-6 rounded-full bg-white/30 mx-auto mb-2"></div>
+                        <span class="text-xs">Mat</span>
                     </button>
-                </div>
-            </div>
-
-            <!-- Advanced Settings -->
-            <div class="space-y-4 pt-6 border-t border-white/10">
-                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Paramètres Avancés</label>
-                
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-300">Bloom Intensité</span>
-                        <input type="range" min="0" max="100" value="30" class="w-28" oninput="updateBloom(this.value)">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-300">Rotation Vitesse</span>
-                        <input type="range" min="0" max="100" value="20" class="w-28" oninput="updateRotationSpeed(this.value)">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-300">Zoom Caméra</span>
-                        <input type="range" min="50" max="150" value="100" class="w-28" oninput="updateZoom(this.value)">
-                    </div>
                 </div>
             </div>
 
             <!-- Export -->
-            <div class="pt-6 border-t border-white/10">
-                <button onclick="exportConfiguration()" class="magnetic-btn w-full group relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-4 rounded-xl font-semibold transition flex items-center justify-center gap-2 overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    <i data-lucide="download" class="w-5 h-5 relative z-10"></i>
-                    <span class="relative z-10">Sauvegarder Configuration</span>
-                </button>
-            </div>
+            <button onclick="exportConfiguration()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2">
+                <i data-lucide="download" class="w-5 h-5"></i>
+                Exporter Config
+            </button>
         </div>
     </aside>
 
-    <!-- Toast Notification -->
+    <!-- Toast -->
     <div id="toast" class="toast">
-        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-            <i data-lucide="check" class="w-5 h-5 text-green-400"></i>
-        </div>
-        <div>
-            <div class="font-semibold text-sm">Succès</div>
-            <div class="text-sm text-gray-400" id="toast-text">Action effectuée</div>
+        <div class="flex items-center gap-3">
+            <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+            <div>
+                <div class="font-medium text-sm">Succès</div>
+                <div class="text-sm text-gray-400" id="toast-text">Action effectuée</div>
+            </div>
         </div>
     </div>
 
@@ -861,80 +480,47 @@
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-        import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
-        import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         
-        // Initialize Lucide icons
+        // Init icons
         lucide.createIcons();
         
-        // Global variables
+        // Globals
         let scene, camera, renderer, composer, controls;
         let glassesGroup, frameGroup, lensGroup, templeGroup;
-        let frameMaterial, lensMaterial, templeMaterial, hingeMaterial;
-        let raycaster, mouse;
+        let frameMaterial, lensMaterial, templeMaterial;
         let isAutoRotating = true;
-        let bloomPass, ssaoPass;
-        let envLight, ambientLight, spotLight, rimLight;
-        let currentEnvironment = 'studio';
-        let lenis;
+        let bloomPass;
         let isExploded = false;
         let wireframeMode = false;
         let physicsEnabled = false;
         
-        // Configuration state
         const config = {
             frameColor: 0x1a1a1a,
             lensType: 'clear',
             lensTint: 0,
             finish: 'glossy',
-            metalness: 0.9,
-            roughness: 0.2,
             bloomStrength: 0.3,
             rotationSpeed: 2.0
         };
 
-        // Initialize
+        // Initialize immediately - NO LOADING SCREEN
         init();
         animate();
 
-        async function init() {
-            // Initialize Lenis smooth scroll
-            lenis = new Lenis({
-                duration: 1.2,
-                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                direction: 'vertical',
-                smooth: true
-            });
-
-            function raf(time) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
-            }
-            requestAnimationFrame(raf);
-
-            // Scene setup
+        function init() {
+            // Scene
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x050505);
-            scene.fog = new THREE.FogExp2(0x050505, 0.02);
+            scene.background = new THREE.Color(0x050508);
+            scene.fog = new THREE.FogExp2(0x050508, 0.02);
 
             // Camera
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
             camera.position.set(0, 0.5, 6);
 
-            // WebGL 2.0 Renderer with advanced features
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('webgl2', { 
-                alpha: true, 
-                antialias: true,
-                powerPreference: "high-performance"
-            });
-            
+            // Renderer - SIMPLIFIED
             renderer = new THREE.WebGLRenderer({ 
-                canvas: canvas,
-                context: context,
-                antialias: true,
-                alpha: true,
-                powerPreference: "high-performance"
+                antialias: true, 
+                alpha: true
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -942,15 +528,21 @@
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.0;
-            renderer.outputColorSpace = THREE.SRGBColorSpace;
             
-            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            // IMPORTANT: Append canvas to container
+            const container = document.getElementById('canvas-container');
+            container.appendChild(renderer.domElement);
+            
+            // Style the canvas
+            renderer.domElement.style.display = 'block';
+            renderer.domElement.style.width = '100%';
+            renderer.domElement.style.height = '100%';
 
             // Post-processing
             setupPostProcessing();
 
             // Controls
-            controls = new OrbitControls(camera, renderer.domElement);
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             controls.minDistance = 3;
@@ -959,41 +551,24 @@
             controls.autoRotate = true;
             controls.autoRotateSpeed = config.rotationSpeed;
 
-            // Professional lighting
+            // Lighting
             setupLighting();
 
             // Create glasses
             createGlasses();
 
-            // Raycaster
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
-
-            // Event listeners
-            setupEventListeners();
-
-            // Loading simulation
-            simulateLoading();
+            // Events
+            window.addEventListener('resize', onWindowResize);
             
-            // Reveal animations
-            setupRevealAnimations();
+            // Show ready toast
+            setTimeout(() => showToast('1337 OPTIC Studio Prêt'), 500);
         }
 
         function setupPostProcessing() {
             composer = new THREE.EffectComposer(renderer);
-            
-            // Render pass
             const renderPass = new THREE.RenderPass(scene, camera);
             composer.addPass(renderPass);
 
-            // SSAO
-            ssaoPass = new THREE.SSAOPass(scene, camera, window.innerWidth, window.innerHeight);
-            ssaoPass.kernelRadius = 16;
-            ssaoPass.minDistance = 0.005;
-            ssaoPass.maxDistance = 0.1;
-            composer.addPass(ssaoPass);
-
-            // Bloom
             bloomPass = new THREE.UnrealBloomPass(
                 new THREE.Vector2(window.innerWidth, window.innerHeight),
                 config.bloomStrength,
@@ -1001,44 +576,26 @@
                 0.85
             );
             composer.addPass(bloomPass);
-            
-            // Output pass for color correction
-            const outputPass = new THREE.OutputPass();
-            composer.addPass(outputPass);
         }
 
         function setupLighting() {
-            // Ambient
-            ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
             scene.add(ambientLight);
 
-            // Key light (softbox simulation)
-            envLight = new THREE.DirectionalLight(0xfff5e6, 2.5);
-            envLight.position.set(5, 8, 5);
-            envLight.castShadow = true;
-            envLight.shadow.mapSize.set(2048, 2048);
-            envLight.shadow.camera.near = 0.1;
-            envLight.shadow.camera.far = 50;
-            envLight.shadow.bias = -0.0001;
-            envLight.shadow.normalBias = 0.02;
-            scene.add(envLight);
+            const keyLight = new THREE.DirectionalLight(0xffffff, 2.0);
+            keyLight.position.set(5, 10, 7);
+            keyLight.castShadow = true;
+            keyLight.shadow.mapSize.set(2048, 2048);
+            scene.add(keyLight);
 
-            // Fill light
-            const fillLight = new THREE.DirectionalLight(0xd6eaff, 1.0);
-            fillLight.position.set(-5, 3, 5);
+            const fillLight = new THREE.DirectionalLight(0x88ccff, 0.8);
+            fillLight.position.set(-5, 5, 5);
             scene.add(fillLight);
 
-            // Rim light
-            rimLight = new THREE.SpotLight(0x4488ff, 3.0);
+            const rimLight = new THREE.SpotLight(0xff88cc, 1.5);
             rimLight.position.set(0, 5, -5);
             rimLight.lookAt(0, 0, 0);
-            rimLight.penumbra = 0.5;
             scene.add(rimLight);
-            
-            // Additional accent light
-            spotLight = new THREE.PointLight(0x3b82f6, 1.5, 10);
-            spotLight.position.set(2, 2, 2);
-            scene.add(spotLight);
         }
 
         function createGlasses() {
@@ -1047,42 +604,30 @@
             lensGroup = new THREE.Group();
             templeGroup = new THREE.Group();
 
-            // PBR Frame material
             frameMaterial = new THREE.MeshPhysicalMaterial({
                 color: config.frameColor,
-                metalness: config.metalness,
-                roughness: config.roughness,
+                metalness: 0.9,
+                roughness: 0.2,
                 clearcoat: 1.0,
-                clearcoatRoughness: config.finish === 'glossy' ? 0.1 : 0.4,
+                clearcoatRoughness: 0.1,
                 reflectivity: 1.0,
-                envMapIntensity: 1.5,
-                sheen: 0.5,
-                sheenColor: 0xffffff
+                envMapIntensity: 1.0
             });
 
-            // Physical glass material
             lensMaterial = new THREE.MeshPhysicalMaterial({
                 color: 0xffffff,
-                metalness: 0.0,
-                roughness: 0.0,
-                transmission: 0.98,
-                thickness: 0.8,
+                metalness: 0,
+                roughness: 0,
+                transmission: 0.95,
+                thickness: 0.5,
                 envMapIntensity: 1.0,
                 clearcoat: 1.0,
-                clearcoatRoughness: 0.0,
-                ior: 1.52,
+                ior: 1.5,
                 transparent: true,
-                opacity: 1.0,
-                attenuationColor: 0xffffff,
-                attenuationDistance: 5.0
+                opacity: 0.9
             });
 
             templeMaterial = frameMaterial.clone();
-            hingeMaterial = new THREE.MeshStandardMaterial({
-                color: 0x888888,
-                metalness: 1.0,
-                roughness: 0.3
-            });
 
             createLenses();
             createFrame();
@@ -1091,57 +636,61 @@
             glassesGroup.add(frameGroup);
             glassesGroup.add(lensGroup);
             glassesGroup.add(templeGroup);
-            
             scene.add(glassesGroup);
-            createFloor();
+
+            // Floor
+            const floorGeo = new THREE.PlaneGeometry(50, 50);
+            const floorMat = new THREE.MeshStandardMaterial({
+                color: 0x080808,
+                roughness: 0.2,
+                metalness: 0.8
+            });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.y = -2;
+            floor.receiveShadow = true;
+            scene.add(floor);
         }
 
         function createLenses() {
             const lensShape = new THREE.Shape();
-            const width = 0.9;
-            const height = 0.7;
+            const width = 0.85;
+            const height = 0.65;
             
             lensShape.moveTo(0, height);
             lensShape.bezierCurveTo(width, height, width, -height, 0, -height);
             lensShape.bezierCurveTo(-width, -height, -width, height, 0, height);
 
             const extrudeSettings = {
-                steps: 3,
-                depth: 0.08,
+                steps: 2,
+                depth: 0.06,
                 bevelEnabled: true,
-                bevelThickness: 0.03,
+                bevelThickness: 0.02,
                 bevelSize: 0.02,
-                bevelOffset: 0,
-                bevelSegments: 8,
-                curveSegments: 32
+                bevelSegments: 4,
+                curveSegments: 24
             };
 
             const lensGeometry = new THREE.ExtrudeGeometry(lensShape, extrudeSettings);
             lensGeometry.center();
 
-            // Left lens
             const leftLens = new THREE.Mesh(lensGeometry, lensMaterial);
-            leftLens.position.set(-1.0, 0, 0);
-            leftLens.rotation.y = 0.08;
+            leftLens.position.set(-0.95, 0, 0);
+            leftLens.rotation.y = 0.05;
             leftLens.castShadow = true;
-            leftLens.receiveShadow = true;
-            leftLens.userData = { type: 'lens', side: 'left' };
             lensGroup.add(leftLens);
 
-            // Right lens
             const rightLens = new THREE.Mesh(lensGeometry, lensMaterial.clone());
-            rightLens.position.set(1.0, 0, 0);
-            rightLens.rotation.y = -0.08;
+            rightLens.position.set(0.95, 0, 0);
+            rightLens.rotation.y = -0.05;
             rightLens.castShadow = true;
-            rightLens.receiveShadow = true;
-            rightLens.userData = { type: 'lens', side: 'right' };
             lensGroup.add(rightLens);
         }
 
         function createFrame() {
             const frameShape = new THREE.Shape();
-            const fw = 0.95;
-            const fh = 0.75;
+            const fw = 0.9;
+            const fh = 0.7;
             
             frameShape.moveTo(0, fh);
             frameShape.bezierCurveTo(fw, fh, fw, -fh, 0, -fh);
@@ -1149,242 +698,110 @@
 
             const frameSettings = {
                 steps: 2,
-                depth: 0.12,
+                depth: 0.1,
                 bevelEnabled: true,
-                bevelThickness: 0.04,
-                bevelSize: 0.04,
-                bevelSegments: 6
+                bevelThickness: 0.03,
+                bevelSize: 0.03,
+                bevelSegments: 4
             };
 
             const frameGeo = new THREE.ExtrudeGeometry(frameShape, frameSettings);
             frameGeo.center();
 
-            // Left rim
             const leftRim = new THREE.Mesh(frameGeo, frameMaterial);
-            leftRim.position.set(-1.0, 0, -0.02);
-            leftRim.rotation.y = 0.08;
+            leftRim.position.set(-0.95, 0, -0.02);
+            leftRim.rotation.y = 0.05;
             leftRim.castShadow = true;
-            leftRim.userData = { type: 'frame' };
             frameGroup.add(leftRim);
 
-            // Right rim
             const rightRim = new THREE.Mesh(frameGeo, frameMaterial);
-            rightRim.position.set(1.0, 0, -0.02);
-            rightRim.rotation.y = -0.08;
+            rightRim.position.set(0.95, 0, -0.02);
+            rightRim.rotation.y = -0.05;
             rightRim.castShadow = true;
-            rightRim.userData = { type: 'frame' };
             frameGroup.add(rightRim);
 
             // Bridge
-            const bridgeGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.7, 16);
-            
+            const bridgeGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.6, 16);
             const bridgeTop = new THREE.Mesh(bridgeGeo, frameMaterial);
             bridgeTop.rotation.z = Math.PI / 2;
-            bridgeTop.rotation.y = -0.1;
-            bridgeTop.position.set(0, 0.25, 0.05);
+            bridgeTop.rotation.y = -0.05;
+            bridgeTop.position.set(0, 0.2, 0.04);
             frameGroup.add(bridgeTop);
 
             const bridgeBottom = new THREE.Mesh(bridgeGeo, frameMaterial);
             bridgeBottom.rotation.z = Math.PI / 2;
-            bridgeBottom.rotation.y = 0.1;
-            bridgeBottom.position.set(0, -0.15, 0.02);
+            bridgeBottom.rotation.y = 0.05;
+            bridgeBottom.position.set(0, -0.1, 0.02);
             frameGroup.add(bridgeBottom);
 
             // Cross bar
-            const crossBarGeo = new THREE.BoxGeometry(0.04, 0.04, 2.8);
-            const crossBar = new THREE.Mesh(crossBarGeo, frameMaterial);
-            crossBar.position.set(0, 0.55, -0.05);
-            crossBar.castShadow = true;
+            const crossBar = new THREE.Mesh(
+                new THREE.BoxGeometry(0.03, 0.03, 2.4),
+                frameMaterial
+            );
+            crossBar.position.set(0, 0.5, -0.04);
             frameGroup.add(crossBar);
         }
 
         function createTemples() {
             const templeCurve = new THREE.CatmullRomCurve3([
                 new THREE.Vector3(0, 0, 0),
-                new THREE.Vector3(0.3, 0.1, -0.5),
-                new THREE.Vector3(0.4, 0, -1.5),
-                new THREE.Vector3(0.3, -0.3, -2.2),
-                new THREE.Vector3(0.2, -0.6, -2.5)
+                new THREE.Vector3(0.25, 0.08, -0.4),
+                new THREE.Vector3(0.35, 0, -1.3),
+                new THREE.Vector3(0.25, -0.25, -1.9),
+                new THREE.Vector3(0.15, -0.5, -2.2)
             ]);
 
-            const templeGeo = new THREE.TubeGeometry(templeCurve, 32, 0.04, 8, false);
+            const templeGeo = new THREE.TubeGeometry(templeCurve, 24, 0.035, 6, false);
 
-            // Left temple
             const leftTemple = new THREE.Mesh(templeGeo, templeMaterial);
-            leftTemple.position.set(-1.85, 0.2, 0);
+            leftTemple.position.set(-1.75, 0.15, 0);
             leftTemple.castShadow = true;
             templeGroup.add(leftTemple);
 
-            // Right temple
             const rightTemple = new THREE.Mesh(templeGeo, templeMaterial);
-            rightTemple.position.set(1.85, 0.2, 0);
+            rightTemple.position.set(1.75, 0.15, 0);
             rightTemple.rotation.y = Math.PI;
             rightTemple.castShadow = true;
             templeGroup.add(rightTemple);
 
             // Hinges
-            const hingeGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.15, 16);
+            const hingeGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.12, 16);
+            const hingeMat = new THREE.MeshStandardMaterial({ 
+                color: 0x888888, 
+                metalness: 1, 
+                roughness: 0.3 
+            });
             
-            const leftHinge = new THREE.Mesh(hingeGeo, hingeMaterial);
+            const leftHinge = new THREE.Mesh(hingeGeo, hingeMat);
             leftHinge.rotation.z = Math.PI / 2;
-            leftHinge.position.set(-1.75, 0.2, 0);
+            leftHinge.position.set(-1.65, 0.15, 0);
             templeGroup.add(leftHinge);
 
-            const rightHinge = new THREE.Mesh(hingeGeo, hingeMaterial);
+            const rightHinge = new THREE.Mesh(hingeGeo, hingeMat);
             rightHinge.rotation.z = Math.PI / 2;
-            rightHinge.position.set(1.75, 0.2, 0);
+            rightHinge.position.set(1.65, 0.15, 0);
             templeGroup.add(rightHinge);
 
             // Nose pads
-            const padGeo = new THREE.CapsuleGeometry(0.06, 0.15, 4, 8);
+            const padGeo = new THREE.CapsuleGeometry(0.05, 0.12, 4, 8);
             const padMat = new THREE.MeshPhysicalMaterial({
                 color: 0xffffff,
-                transmission: 0.4,
-                opacity: 0.8,
+                transmission: 0.3,
+                opacity: 0.7,
                 transparent: true,
-                roughness: 0.4,
-                clearcoat: 0.5
+                roughness: 0.4
             });
 
             const leftPad = new THREE.Mesh(padGeo, padMat);
-            leftPad.position.set(-0.35, -0.25, 0.15);
+            leftPad.position.set(-0.3, -0.2, 0.12);
             leftPad.rotation.set(0.3, 0, -0.2);
             frameGroup.add(leftPad);
 
             const rightPad = new THREE.Mesh(padGeo, padMat);
-            rightPad.position.set(0.35, -0.25, 0.15);
+            rightPad.position.set(0.3, -0.2, 0.12);
             rightPad.rotation.set(0.3, 0, 0.2);
             frameGroup.add(rightPad);
-        }
-
-        function createFloor() {
-            const floorGeo = new THREE.PlaneGeometry(50, 50);
-            const floorMat = new THREE.MeshStandardMaterial({
-                color: 0x050505,
-                roughness: 0.1,
-                metalness: 0.5,
-            });
-            
-            const floor = new THREE.Mesh(floorGeo, floorMat);
-            floor.rotation.x = -Math.PI / 2;
-            floor.position.y = -2;
-            floor.receiveShadow = true;
-            scene.add(floor);
-
-            const grid = new THREE.GridHelper(20, 40, 0x333333, 0x111111);
-            grid.position.y = -1.99;
-            scene.add(grid);
-        }
-
-        function setupEventListeners() {
-            window.addEventListener('resize', onWindowResize);
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('click', onMouseClick);
-            
-            // Custom cursor
-            const cursor = document.getElementById('cursor');
-            document.addEventListener('mousemove', (e) => {
-                cursor.style.left = e.clientX - 10 + 'px';
-                cursor.style.top = e.clientY - 10 + 'px';
-            });
-            
-            document.querySelectorAll('button, .color-orb, .material-card').forEach(el => {
-                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-            });
-            
-            // Magnetic buttons
-            document.querySelectorAll('.magnetic-btn').forEach(btn => {
-                btn.addEventListener('mousemove', (e) => {
-                    const rect = btn.getBoundingClientRect();
-                    const x = e.clientX - rect.left - rect.width / 2;
-                    const y = e.clientY - rect.top - rect.height / 2;
-                    btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-                });
-                
-                btn.addEventListener('mouseleave', () => {
-                    btn.style.transform = 'translate(0, 0)';
-                });
-            });
-            
-            // Tilt cards
-            document.querySelectorAll('.tilt-card').forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = (e.clientX - rect.left) / rect.width;
-                    const y = (e.clientY - rect.top) / rect.height;
-                    card.style.transform = `perspective(1000px) rotateX(${(y - 0.5) * -10}deg) rotateY(${(x - 0.5) * 10}deg)`;
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-                });
-            });
-            
-            // Material card spotlight effect
-            document.querySelectorAll('.material-card').forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / rect.width) * 100;
-                    const y = ((e.clientY - rect.top) / rect.height) * 100;
-                    card.style.setProperty('--mouse-x', `${x}%`);
-                    card.style.setProperty('--mouse-y', `${y}%`);
-                });
-            });
-            
-            // Scroll progress
-            window.addEventListener('scroll', () => {
-                const scrolled = window.scrollY;
-                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-                const progress = scrolled / maxScroll;
-                document.getElementById('scroll-progress').style.transform = `scaleX(${progress})`;
-            });
-        }
-
-        function simulateLoading() {
-            const loadingTexts = [
-                "Initialisation WebGPU...",
-                "Chargement des shaders...",
-                "Compilation des matériaux PBR...",
-                "Génération des géométries...",
-                "Finalisation du rendu..."
-            ];
-            
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 20;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    document.getElementById('progress-circle').style.strokeDashoffset = 0;
-                    document.getElementById('progress-bar').style.width = '100%';
-                    document.getElementById('loading-text').textContent = "Prêt !";
-                    
-                    setTimeout(() => {
-                        document.getElementById('loader').classList.add('hidden');
-                    }, 800);
-                } else {
-                    const textIndex = Math.floor((progress / 100) * loadingTexts.length);
-                    document.getElementById('loading-text').textContent = loadingTexts[Math.min(textIndex, loadingTexts.length - 1)];
-                }
-                
-                const offset = 339.292 - (progress / 100) * 339.292;
-                document.getElementById('progress-circle').style.strokeDashoffset = offset;
-                document.getElementById('progress-bar').style.width = progress + '%';
-            }, 300);
-        }
-
-        function setupRevealAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.reveal-text').forEach(el => observer.observe(el));
         }
 
         function animate() {
@@ -1392,38 +809,13 @@
             
             const time = Date.now() * 0.001;
 
-            // Floating animation
             if (glassesGroup && !isExploded && !physicsEnabled) {
-                glassesGroup.position.y = Math.sin(time * 0.5) * 0.08;
-                glassesGroup.rotation.z = Math.sin(time * 0.3) * 0.015;
+                glassesGroup.position.y = Math.sin(time * 0.5) * 0.06;
+                glassesGroup.rotation.z = Math.sin(time * 0.3) * 0.01;
             }
 
             controls.update();
             composer.render();
-        }
-
-        function onMouseMove(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        }
-
-        function onMouseClick(event) {
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(glassesGroup.children, true);
-
-            if (intersects.length > 0) {
-                const object = intersects[0].object;
-                
-                if (object.userData.type === 'lens') {
-                    const types = ['clear', 'photochromic', 'polarized', 'mirrored', 'blueblock'];
-                    const current = config.lensType;
-                    const nextIndex = (types.indexOf(current) + 1) % types.length;
-                    changeLensType(types[nextIndex]);
-                    showToast('Type de verre changé: ' + types[nextIndex]);
-                } else if (object.userData.type === 'frame') {
-                    toggleControls();
-                }
-            }
         }
 
         function onWindowResize() {
@@ -1433,7 +825,7 @@
             composer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // Control functions
+        // UI Functions
         window.toggleControls = function() {
             document.getElementById('side-panel').classList.toggle('open');
         };
@@ -1441,57 +833,30 @@
         window.toggleAutoRotate = function() {
             isAutoRotating = !isAutoRotating;
             controls.autoRotate = isAutoRotating;
-            
             const btn = document.getElementById('btn-rotate');
-            if (isAutoRotating) {
-                btn.classList.add('bg-white/10');
-                showToast('Rotation automatique activée');
-            } else {
-                btn.classList.remove('bg-white/10');
-                showToast('Rotation automatique désactivée');
-            }
+            btn.classList.toggle('bg-white/10', isAutoRotating);
+            showToast(isAutoRotating ? 'Rotation ON' : 'Rotation OFF');
         };
 
         window.resetView = function() {
-            gsap.to(camera.position, {
-                x: 0,
-                y: 0.5,
-                z: 6,
-                duration: 1.5,
-                ease: "power3.inOut"
-            });
-            
-            gsap.to(controls.target, {
-                x: 0,
-                y: 0,
-                z: 0,
-                duration: 1.5,
-                ease: "power3.inOut"
-            });
-            
-            if (isExploded) resetExplode();
-            
+            gsap.to(camera.position, { x: 0, y: 0.5, z: 6, duration: 1.5, ease: "power3.inOut" });
+            gsap.to(controls.target, { x: 0, y: 0, z: 0, duration: 1.5, ease: "power3.inOut" });
+            if (isExploded) {
+                isExploded = false;
+                gsap.to(frameGroup.position, { z: 0, duration: 0.8 });
+                gsap.to(lensGroup.position, { z: 0, duration: 0.8 });
+                gsap.to(templeGroup.children[0].position, { x: -1.75, duration: 0.8 });
+                gsap.to(templeGroup.children[1].position, { x: 1.75, duration: 0.8 });
+            }
             showToast('Vue réinitialisée');
         };
 
         window.changeFrameColor = function(color, element) {
             config.frameColor = color;
+            const newColor = new THREE.Color(color);
             
-            gsap.to(frameMaterial.color, {
-                r: new THREE.Color(color).r,
-                g: new THREE.Color(color).g,
-                b: new THREE.Color(color).b,
-                duration: 0.6,
-                ease: "power2.out"
-            });
-            
-            gsap.to(templeMaterial.color, {
-                r: new THREE.Color(color).r,
-                g: new THREE.Color(color).g,
-                b: new THREE.Color(color).b,
-                duration: 0.6,
-                ease: "power2.out"
-            });
+            gsap.to(frameMaterial.color, { r: newColor.r, g: newColor.g, b: newColor.b, duration: 0.6 });
+            gsap.to(templeMaterial.color, { r: newColor.r, g: newColor.g, b: newColor.b, duration: 0.6 });
             
             document.querySelectorAll('.color-orb').forEach(btn => btn.classList.remove('active'));
             element.classList.add('active');
@@ -1499,46 +864,31 @@
 
         window.changeLensType = function(type, element) {
             config.lensType = type;
-            
-            const newMaterial = lensMaterial.clone();
+            const newMat = lensMaterial.clone();
             
             switch(type) {
                 case 'clear':
-                    newMaterial.color.setHex(0xffffff);
-                    newMaterial.transmission = 0.98;
-                    newMaterial.opacity = 1;
-                    newMaterial.metalness = 0;
+                    newMat.color.setHex(0xffffff);
+                    newMat.transmission = 0.95;
+                    newMat.metalness = 0;
                     break;
                 case 'photochromic':
-                    newMaterial.color.setHex(0x444444);
-                    newMaterial.transmission = 0.6;
-                    newMaterial.opacity = 0.9;
+                    newMat.color.setHex(0x444444);
+                    newMat.transmission = 0.6;
                     break;
                 case 'polarized':
-                    newMaterial.color.setHex(0x222222);
-                    newMaterial.transmission = 0.4;
-                    newMaterial.opacity = 0.95;
-                    newMaterial.metalness = 0.2;
+                    newMat.color.setHex(0x222222);
+                    newMat.transmission = 0.4;
+                    newMat.metalness = 0.2;
                     break;
                 case 'mirrored':
-                    newMaterial.color.setHex(0x88ccff);
-                    newMaterial.transmission = 0.3;
-                    newMaterial.opacity = 1;
-                    newMaterial.metalness = 0.8;
-                    newMaterial.roughness = 0.1;
-                    break;
-                case 'blueblock':
-                    newMaterial.color.setHex(0xffaa44);
-                    newMaterial.transmission = 0.85;
-                    newMaterial.opacity = 0.9;
+                    newMat.color.setHex(0x88ccff);
+                    newMat.transmission = 0.3;
+                    newMat.metalness = 0.8;
                     break;
             }
             
-            lensGroup.children.forEach((lens, index) => {
-                const mat = newMaterial.clone();
-                if (index === 1) mat.side = THREE.FrontSide;
-                lens.material = mat;
-            });
+            lensGroup.children.forEach(lens => lens.material = newMat.clone());
             
             if (element) {
                 document.querySelectorAll('.material-card').forEach(btn => btn.classList.remove('active'));
@@ -1551,228 +901,108 @@
             document.getElementById('tint-value').textContent = value + '%';
             
             const tintColor = new THREE.Color().setHSL(0, 0, 1 - (value / 100) * 0.7);
-            
             lensGroup.children.forEach(lens => {
-                gsap.to(lens.material.color, {
-                    r: tintColor.r,
-                    g: tintColor.g,
-                    b: tintColor.b,
-                    duration: 0.3
-                });
-                lens.material.transmission = 0.98 - (value / 100) * 0.6;
+                gsap.to(lens.material.color, { r: tintColor.r, g: tintColor.g, b: tintColor.b, duration: 0.3 });
+                lens.material.transmission = 0.95 - (value / 100) * 0.6;
             });
         };
 
         window.setFinish = function(type, element) {
             config.finish = type;
+            const roughness = type === 'glossy' ? 0.2 : type === 'satin' ? 0.4 : 0.7;
+            const clearcoatRoughness = type === 'glossy' ? 0.1 : type === 'satin' ? 0.3 : 0.6;
             
-            let roughness, clearcoatRoughness;
-            switch(type) {
-                case 'glossy':
-                    roughness = 0.2;
-                    clearcoatRoughness = 0.1;
-                    break;
-                case 'satin':
-                    roughness = 0.4;
-                    clearcoatRoughness = 0.3;
-                    break;
-                case 'matte':
-                    roughness = 0.7;
-                    clearcoatRoughness = 0.6;
-                    break;
-            }
-            
-            gsap.to(frameMaterial, {
-                roughness: roughness,
-                clearcoatRoughness: clearcoatRoughness,
-                duration: 0.5
-            });
+            gsap.to(frameMaterial, { roughness: roughness, clearcoatRoughness: clearcoatRoughness, duration: 0.5 });
             
             document.querySelectorAll('.material-card').forEach(btn => btn.classList.remove('active'));
             element.classList.add('active');
         };
 
         window.setEnvironment = function(type) {
-            currentEnvironment = type;
-            
             const envSettings = {
-                studio: { 
-                    bg: 0x050505, 
-                    fog: 0x050505,
-                    keyLight: 0xfff5e6,
-                    keyIntensity: 2.5,
-                    fillLight: 0xd6eaff,
-                    rimLight: 0x4488ff
-                },
-                sunset: { 
-                    bg: 0x2a1810, 
-                    fog: 0x2a1810,
-                    keyLight: 0xffaa66,
-                    keyIntensity: 3.0,
-                    fillLight: 0xff8844,
-                    rimLight: 0xff6644
-                },
-                night: { 
-                    bg: 0x0a0a1a, 
-                    fog: 0x0a0a1a,
-                    keyLight: 0x6666ff,
-                    keyIntensity: 2.0,
-                    fillLight: 0x4444aa,
-                    rimLight: 0x8888ff
-                },
-                neon: { 
-                    bg: 0x1a0a2e, 
-                    fog: 0x1a0a2e,
-                    keyLight: 0xff00ff,
-                    keyIntensity: 3.5,
-                    fillLight: 0x00ffff,
-                    rimLight: 0xff0088
-                }
+                studio: { bg: 0x050508, key: 0xffffff },
+                sunset: { bg: 0x2a1810, key: 0xffaa66 },
+                night: { bg: 0x0a0a1a, key: 0x6666ff },
+                neon: { bg: 0x1a0a2e, key: 0xff00ff }
             };
             
             const env = envSettings[type];
+            gsap.to(scene.background, { r: new THREE.Color(env.bg).r, g: new THREE.Color(env.bg).g, b: new THREE.Color(env.bg).b, duration: 1 });
+            gsap.to(scene.fog.color, { r: new THREE.Color(env.bg).r, g: new THREE.Color(env.bg).g, b: new THREE.Color(env.bg).b, duration: 1 });
             
-            gsap.to(scene.background, { 
-                r: new THREE.Color(env.bg).r, 
-                g: new THREE.Color(env.bg).g, 
-                b: new THREE.Color(env.bg).b, 
-                duration: 1 
-            });
-            gsap.to(scene.fog.color, { 
-                r: new THREE.Color(env.fog).r, 
-                g: new THREE.Color(env.fog).g, 
-                b: new THREE.Color(env.fog).b, 
-                duration: 1 
-            });
-            
-            envLight.color.setHex(env.keyLight);
-            envLight.intensity = env.keyIntensity;
-            
-            document.querySelectorAll('.env-btn').forEach(btn => {
-                btn.classList.remove('active', 'bg-white/10');
-                if (btn.textContent.toLowerCase().includes(type === 'studio' ? 'studio' : type === 'sunset' ? 'golden' : type === 'night' ? 'night' : 'cyber')) {
-                    btn.classList.add('active', 'bg-white/10');
-                }
-            });
-        };
-
-        window.updateBloom = function(value) {
-            config.bloomStrength = value / 100;
-            bloomPass.strength = config.bloomStrength;
-        };
-
-        window.updateRotationSpeed = function(value) {
-            config.rotationSpeed = (value / 100) * 10;
-            controls.autoRotateSpeed = config.rotationSpeed;
-        };
-
-        window.updateZoom = function(value) {
-            const zoom = value / 100;
-            camera.fov = 45 / zoom;
-            camera.updateProjectionMatrix();
+            document.querySelectorAll('.env-btn').forEach(btn => btn.classList.remove('active', 'bg-white/10'));
+            event.target.closest('.env-btn').classList.add('active', 'bg-white/10');
         };
 
         window.applyPreset = function(name, element) {
             const presets = {
-                classic: { color: 0x1a1a1a, lens: 'clear', finish: 'glossy' },
-                gold: { color: 0xd4af37, lens: 'photochromic', finish: 'glossy' },
-                sport: { color: 0xe11d48, lens: 'mirrored', finish: 'satin' },
-                cyber: { color: 0x7c3aed, lens: 'blueblock', finish: 'matte' }
+                classic: { color: 0x1a1a1a, lens: 'clear' },
+                gold: { color: 0xd4af37, lens: 'photochromic' },
+                sport: { color: 0xe11d48, lens: 'mirrored' },
+                cyber: { color: 0x7c3aed, lens: 'clear' }
             };
             
             const preset = presets[name];
             if (preset) {
-                changeFrameColor(preset.color, document.querySelector(`[onclick="changeFrameColor(${preset.color}, this)"]`));
+                changeFrameColor(preset.color, document.querySelector(`[onclick*="${preset.color}"]`));
                 changeLensType(preset.lens);
-                setFinish(preset.finish, document.querySelector(`[onclick="setFinish('${preset.finish}', this)"]`));
             }
             
             document.querySelectorAll('.preset-item').forEach(card => card.classList.remove('active'));
             element.classList.add('active');
-            
-            showToast('Préréglage "' + name + '" appliqué');
+            showToast('Préréglage: ' + name);
         };
 
         window.dropPhysics = function() {
             physicsEnabled = !physicsEnabled;
-            
             if (physicsEnabled) {
-                gsap.to(glassesGroup.position, {
-                    y: -1,
-                    duration: 1.5,
-                    ease: "bounce.out"
-                });
-                gsap.to(glassesGroup.rotation, {
-                    x: Math.random() * 0.5,
-                    z: Math.random() * 0.3,
-                    duration: 1.5,
-                    ease: "power2.out"
-                });
-                showToast('Simulation physique activée');
+                gsap.to(glassesGroup.position, { y: -1, duration: 1.5, ease: "bounce.out" });
+                gsap.to(glassesGroup.rotation, { x: 0.3, z: 0.2, duration: 1.5 });
+                showToast('Physics ON');
             } else {
                 gsap.to(glassesGroup.position, { y: 0, duration: 0.8 });
                 gsap.to(glassesGroup.rotation, { x: 0, z: 0, duration: 0.8 });
-                showToast('Simulation physique désactivée');
+                showToast('Physics OFF');
             }
         };
 
         window.explodeView = function() {
             if (isExploded) {
-                resetExplode();
-                return;
+                isExploded = false;
+                gsap.to(frameGroup.position, { z: 0, duration: 0.8 });
+                gsap.to(lensGroup.position, { z: 0, duration: 0.8 });
+                gsap.to(templeGroup.children[0].position, { x: -1.75, duration: 0.8 });
+                gsap.to(templeGroup.children[1].position, { x: 1.75, duration: 0.8 });
+                showToast('Vue normale');
+            } else {
+                isExploded = true;
+                gsap.to(frameGroup.position, { z: -0.5, duration: 1 });
+                gsap.to(lensGroup.position, { z: 0.3, duration: 1 });
+                gsap.to(templeGroup.children[0].position, { x: -2.5, duration: 1 });
+                gsap.to(templeGroup.children[1].position, { x: 2.5, duration: 1 });
+                showToast('Vue éclatée');
             }
-            
-            isExploded = true;
-            
-            gsap.to(frameGroup.position, { z: -0.5, duration: 1, ease: "power2.out" });
-            gsap.to(lensGroup.position, { z: 0.3, duration: 1, ease: "power2.out" });
-            gsap.to(templeGroup.children[0].position, { x: -2.5, duration: 1, ease: "power2.out" });
-            gsap.to(templeGroup.children[1].position, { x: 2.5, duration: 1, ease: "power2.out" });
-            
-            showToast('Vue éclatée activée');
-        };
-
-        window.resetExplode = function() {
-            isExploded = false;
-            
-            gsap.to(frameGroup.position, { z: 0, duration: 0.8, ease: "power2.inOut" });
-            gsap.to(lensGroup.position, { z: 0, duration: 0.8, ease: "power2.inOut" });
-            gsap.to(templeGroup.children[0].position, { x: -1.85, duration: 0.8, ease: "power2.inOut" });
-            gsap.to(templeGroup.children[1].position, { x: 1.85, duration: 0.8, ease: "power2.inOut" });
-            
-            showToast('Vue normale restaurée');
         };
 
         window.toggleWireframe = function() {
             wireframeMode = !wireframeMode;
-            
-            glassesGroup.traverse((child) => {
-                if (child.isMesh) {
-                    child.material.wireframe = wireframeMode;
-                }
+            glassesGroup.traverse(child => { 
+                if (child.isMesh) child.material.wireframe = wireframeMode; 
             });
-            
-            showToast(wireframeMode ? 'Mode fil de fer activé' : 'Mode normal restauré');
-        };
-
-        window.toggleAR = function() {
-            showToast('Mode AR - Utilisez votre caméra pour essayer');
+            showToast(wireframeMode ? 'Wireframe ON' : 'Wireframe OFF');
         };
 
         window.addToCart = function() {
             const btn = document.getElementById('btn-cart');
-            const originalHTML = btn.innerHTML;
-            
-            btn.innerHTML = '<i data-lucide="check" class="w-6 h-6 mr-2"></i>Ajouté !';
-            btn.classList.remove('from-blue-600', 'via-purple-600', 'to-blue-600');
+            btn.innerHTML = '<i data-lucide="check" class="w-5 h-5 mr-2"></i>Ajouté!';
+            btn.classList.remove('from-blue-600', 'to-purple-600');
             btn.classList.add('from-green-600', 'to-green-700');
-            
             lucide.createIcons();
-            showToast('Produit ajouté au panier: Aero Titanium X');
+            showToast('Ajouté au panier!');
             
             setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.classList.add('from-blue-600', 'via-purple-600', 'to-blue-600');
+                btn.innerHTML = '<i data-lucide="shopping-bag" class="w-5 h-5 mr-2"></i>Ajouter au Panier';
+                btn.classList.add('from-blue-600', 'to-purple-600');
                 btn.classList.remove('from-green-600', 'to-green-700');
                 lucide.createIcons();
             }, 2000);
@@ -1783,31 +1013,22 @@
                 model: 'Aero Titanium X',
                 frameColor: config.frameColor.toString(16),
                 lensType: config.lensType,
-                lensTint: config.lensTint,
-                finish: config.finish,
-                timestamp: new Date().toISOString(),
-                version: '2026.1'
+                timestamp: new Date().toISOString()
             };
             
-            const dataStr = JSON.stringify(configData, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            
+            const blob = new Blob([JSON.stringify(configData, null, 2)], { type: 'application/json' });
             const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = '1337-optic-config-2026.json';
+            link.href = URL.createObjectURL(blob);
+            link.download = '1337-optic-config.json';
             link.click();
-            
-            showToast('Configuration exportée avec succès');
+            showToast('Config exportée!');
         };
 
         function showToast(text) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-text').textContent = text;
             toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
     </script>
 </body>
