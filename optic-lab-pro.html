@@ -1,0 +1,631 @@
+
+html_content = '''<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+<meta name="theme-color" content="#050508">
+<title>OPTIC LAB | Studio Lunettier Next-Gen</title>
+<!-- Preconnect & Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Space+Grotesk:wght@400..700&display=swap" rel="stylesheet">
+<!-- Three.js Import Map -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<style>
+@layer base, components, utilities, pages;
+@layer base {
+  :root {
+    --bg: #050508; --surface: #0a0a0f; --glass: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12); --text: #ffffff; --text-muted: #9ca3af;
+    --primary: #3b82f6; --primary-dark: #1d4ed8; --accent: #8b5cf6; --success: #10b981; --warning: #f59e0b; --error: #ef4444;
+    --radius: 12px; --radius-lg: 20px; --shadow: 0 10px 30px rgba(0,0,0,0.4);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text); background: var(--bg);
+    scroll-behavior: smooth; -webkit-tap-highlight-color: transparent;
+    color-scheme: dark;
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { height: 100%; }
+  body { min-height: 100vh; overflow-x: hidden; line-height: 1.5; }
+  img, video { max-width: 100%; height: auto; display: block; }
+  button, input, select, textarea { font: inherit; }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+}
+@layer components {
+  .container { width: min(90%, 1200px); margin-inline: auto; padding-block: 2rem; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: var(--radius); font-weight: 600; border: none; cursor: pointer; transition: all 0.3s var(--ease); }
+  .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,130,246,0.3); }
+  .btn-glass { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid var(--border); color: white; }
+  .btn-glass:has(:hover) { background: rgba(255,255,255,0.15); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: transform 0.3s var(--ease); }
+  .card:hover { transform: translateY(-4px); }
+  .glass-panel { background: var(--glass); backdrop-filter: blur(16px) saturate(180%); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+  .input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; color: white; transition: 0.2s; }
+  .input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  .badge { padding: 0.25rem 0.6rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; }
+  .badge-new { background: rgba(59,130,246,0.2); color: #60a5fa; }
+  .badge-sale { background: rgba(239,68,68,0.2); color: #f87171; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; translate: -50% 0; background: #111; border: 1px solid var(--primary); padding: 0.75rem 1.5rem; border-radius: var(--radius); opacity: 0; translate: -50% 100%; transition: 0.4s var(--ease); z-index: 1000; pointer-events: none; }
+  .toast.show { translate: -50% 0; opacity: 1; }
+  .loader { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .page-section { display: none; opacity: 0; transition: opacity 0.4s var(--ease); padding-top: 5rem; }
+  .page-section.active { display: block; opacity: 1; }
+  .nav-link { position: relative; padding: 0.5rem 0; color: var(--text-muted); transition: color 0.2s; }
+  .nav-link.active { color: white; }
+  .nav-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--primary); transition: width 0.3s var(--ease); }
+  .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+  dialog::backdrop { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+  dialog[open] { animation: modalIn 0.3s var(--ease); }
+  @keyframes modalIn { from { opacity: 0; scale: 0.95; translate: 0 10px; } to { opacity: 1; scale: 1; translate: 0 0; } }
+  .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1.5rem; }
+  .flex-wrap { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .text-gradient { background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .h-screen { min-height: calc(100vh - 5rem); }
+}
+@layer utilities {
+  .hidden { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .gap-sm { gap: 0.5rem; }
+  .gap-md { gap: 1rem; }
+  .gap-lg { gap: 1.5rem; }
+  .p-sm { padding: 0.75rem; }
+  .p-md { padding: 1.25rem; }
+  .p-lg { padding: 2rem; }
+  .rounded { border-radius: var(--radius); }
+  .rounded-lg { border-radius: var(--radius-lg); }
+}
+@layer pages {
+  header { position: fixed; inset-block: 0 0; width: 100%; z-index: 50; background: linear-gradient(to bottom, rgba(5,5,8,0.85), rgba(5,5,8,0)); backdrop-filter: blur(8px); transition: background 0.3s; }
+  header.scrolled { background: rgba(10,10,15,0.95); border-bottom: 1px solid var(--border); }
+  .hero-3d { position: relative; height: calc(100vh - 5rem); overflow: hidden; }
+  .canvas-wrap { position: absolute; inset: 0; }
+  .canvas-wrap canvas { display: block; width: 100% !important; height: 100% !important; touch-action: none; }
+  .overlay-ui { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; justify-content: center; pointer-events: none; }
+  .overlay-ui > * { pointer-events: auto; }
+  .spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.75rem; }
+  .spec-box { background: var(--glass); border: 1px solid var(--border); padding: 0.75rem; border-radius: var(--radius); text-align: center; }
+  .color-orb { width: 32px; height: 32px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
+  .color-orb.active { border-color: white; box-shadow: 0 0 0 3px var(--primary); }
+  .filter-pill { padding: 0.4rem 1rem; border-radius: 99px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+  .filter-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .status-pill { padding: 0.25rem 0.6rem; border-radius: 99px; font-size: 0.75rem; }
+  .status-pending { background: rgba(245,158,11,0.2); color: #fbbf24; }
+  .status-shipped { background: rgba(59,130,246,0.2); color: #60a5fa; }
+  .status-delivered { background: rgba(16,185,129,0.2); color: #34d399; }
+  footer { background: #0a0a0f; border-top: 1px solid var(--border); padding: 3rem 0; margin-top: 4rem; }
+}
+</style>
+</head>
+<body>
+<header id="navbar">
+  <div class="container flex-center" style="justify-content: space-between; padding: 1rem 0;">
+    <a href="#home" class="flex-center gap-sm" onclick="router.go('home'); return false;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10.5a2.5 2.5 0 1 0 5 0 2.5 2.5 0 0 0-5 0"/><path d="M19 10.5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0"/><path d="M15 10.5h4"/><path d="M5 10.5H9"/><path d="M7.5 10.5v-1a2.5 2.5 0 0 1 2.5-2.5h4a2.5 2.5 0 0 1 2.5 2.5v1"/><path d="M17 10.5v1a2.5 2.5 0 0 0 2.5 2.5h.5"/><path d="M7 10.5v1a2.5 2.5 0 0 1-2.5 2.5h-.5"/></svg>
+      <span class="font-bold tracking-tight">OPTIC LAB</span>
+    </a>
+    <nav class="hidden md:flex gap-md">
+      <a href="#home" class="nav-link" onclick="router.go('home'); return false;">Accueil</a>
+      <a href="#collection" class="nav-link" onclick="router.go('collection'); return false;">Collection</a>
+      <a href="#customize" class="nav-link" onclick="router.go('customize'); return false;">Configurateur</a>
+      <a href="#about" class="nav-link" onclick="router.go('about'); return false;">À Propos</a>
+      <a href="#contact" class="nav-link" onclick="router.go('contact'); return false;">Contact</a>
+    </nav>
+    <div class="flex-center gap-sm">
+      <button class="btn-glass p-sm rounded" onclick="router.go('cart')" aria-label="Panier">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="badge-new hidden" id="cart-badge">0</span>
+      </button>
+      <button class="md:hidden btn-glass p-sm rounded" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-40 bg-black/90 backdrop-blur-xl p-8 pt-24 flex flex-col gap-4">
+    <button class="self-end p-sm" onclick="toggleMobileMenu()">✕</button>
+    <a href="#home" class="text-xl font-medium" onclick="router.go('home'); toggleMobileMenu()">Accueil</a>
+    <a href="#collection" class="text-xl font-medium" onclick="router.go('collection'); toggleMobileMenu()">Collection</a>
+    <a href="#customize" class="text-xl font-medium" onclick="router.go('customize'); toggleMobileMenu()">Configurateur</a>
+    <a href="#about" class="text-xl font-medium" onclick="router.go('about'); toggleMobileMenu()">À Propos</a>
+    <a href="#contact" class="text-xl font-medium" onclick="router.go('contact'); toggleMobileMenu()">Contact</a>
+  </div>
+</header>
+
+<main id="app">
+  <!-- HOME -->
+  <section id="page-home" class="page-section active">
+    <div class="hero-3d">
+      <div id="home-canvas" class="canvas-wrap"></div>
+      <div class="container overlay-ui">
+        <div class="glass-panel p-lg max-w-2xl">
+          <span class="badge badge-new">COLLECTION 2026</span>
+          <h1 class="text-gradient" style="font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1.1; margin: 1rem 0;">Aero Titanium X</h1>
+          <p class="text-muted">Monture aéronautique grade 5, verres nanocéramiques photochromiques. Essayage 3D temps réel.</p>
+          <div class="spec-grid my-4">
+            <div class="spec-box"><div class="font-bold text-xl">12g</div><div class="text-xs text-muted">Poids</div></div>
+            <div class="spec-box"><div class="font-bold text-xl">Ti-6Al</div><div class="text-xs text-muted">Alliage</div></div>
+            <div class="spec-box"><div class="font-bold text-xl">UV400</div><div class="text-xs text-muted">Filtre</div></div>
+            <div class="spec-box"><div class="font-bold text-xl">AR</div><div class="text-xs text-muted">Ready</div></div>
+          </div>
+          <div class="flex-wrap mt-4">
+            <button class="btn btn-primary" onclick="APIs.cart.add({id:'aero-x',name:'Aero Titanium X',price:2450,img:'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=400'})">Ajouter au Panier • 2 450 MAD</button>
+            <button class="btn btn-glass" onclick="router.go('customize')">Personnaliser</button>
+            <button class="btn btn-glass" onclick="startAR()">📷 Essai AR</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <h2 class="text-center mb-4" style="font-size: clamp(1.8rem, 5vw, 2.5rem); font-family: 'Space Grotesk';">Nouveautés</h2>
+      <div id="featured-grid" class="grid-auto mb-8"></div>
+      <div class="text-center"><button class="btn btn-glass" onclick="router.go('collection')">Voir Toute la Collection →</button></div>
+    </div>
+  </section>
+
+  <!-- COLLECTION -->
+  <section id="page-collection" class="page-section">
+    <div class="container">
+      <div class="flex-center" style="justify-content: space-between; flex-wrap: wrap; margin-bottom: 1.5rem;">
+        <h2 style="font-size: 2rem; font-family: 'Space Grotesk';">Notre Collection</h2>
+        <div class="flex-wrap" id="filters"></div>
+      </div>
+      <div id="collection-grid" class="grid-auto"></div>
+      <div class="flex-center gap-md mt-6" id="pagination"></div>
+    </div>
+  </section>
+
+  <!-- PRODUCT DETAIL -->
+  <section id="page-product" class="page-section">
+    <div class="container grid-auto" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+      <div class="glass-panel p-md flex-center" style="min-height: 400px;">
+        <img id="prod-img" src="" alt="" class="rounded-lg" style="max-height: 350px; object-fit: contain;">
+      </div>
+      <div class="space-y-4">
+        <span id="prod-badge" class="badge badge-new hidden">Nouveau</span>
+        <h1 id="prod-name" class="font-bold text-2xl"></h1>
+        <div class="flex-center gap-sm text-muted" id="prod-rating"></div>
+        <p id="prod-desc" class="text-muted"></p>
+        <div class="glass-panel p-md rounded">
+          <div class="flex-center" style="justify-content: space-between;">
+            <span id="prod-price" class="text-2xl font-bold"></span>
+            <span id="prod-stock" class="text-sm text-muted">En stock</span>
+          </div>
+          <button id="prod-add-btn" class="btn btn-primary w-full mt-4">Ajouter au Panier</button>
+        </div>
+        <details class="glass-panel p-sm rounded">
+          <summary class="font-medium cursor-pointer">Caractéristiques Techniques</summary>
+          <div id="prod-specs" class="mt-2 text-sm text-muted space-y-1"></div>
+        </details>
+        <div class="glass-panel p-sm rounded">
+          <h3 class="font-medium mb-2">Avis Clients</h3>
+          <div id="prod-reviews" class="space-y-2"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMIZE -->
+  <section id="page-customize" class="page-section">
+    <div class="container grid-auto" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+      <div id="custom-canvas" class="glass-panel rounded-lg" style="height: 500px; position: relative;"></div>
+      <div class="space-y-4">
+        <h2 class="text-gradient" style="font-size: 2rem; font-family: 'Space Grotesk';">Configurateur 3D</h2>
+        <div class="glass-panel p-md rounded">
+          <label class="text-sm text-muted block mb-2">Modèle</label>
+          <div class="flex-wrap" id="model-select">
+            <button class="btn btn-glass active" data-model="aero">Aero</button>
+            <button class="btn btn-glass" data-model="classic">Classic</button>
+            <button class="btn btn-glass" data-model="sport">Sport</button>
+          </div>
+        </div>
+        <div class="glass-panel p-md rounded">
+          <label class="text-sm text-muted block mb-2">Couleur Monture</label>
+          <div class="flex-wrap" id="color-select">
+            <div class="color-orb active bg-gray-900" data-color="0x1a1a1a"></div>
+            <div class="color-orb bg-yellow-600" data-color="0xd4af37"></div>
+            <div class="color-orb bg-gray-400" data-color="0xc0c0c0"></div>
+            <div class="color-orb bg-blue-700" data-color="0x1e40af"></div>
+            <div class="color-orb bg-rose-700" data-color="0xe11d48"></div>
+          </div>
+        </div>
+        <div class="glass-panel p-md rounded">
+          <label class="text-sm text-muted block mb-2">Type de Verres</label>
+          <select id="lens-select" class="input">
+            <option value="clear" data-price="0">Transparent (+0)</option>
+            <option value="photo" data-price="400">Photochromique (+400)</option>
+            <option value="polarized" data-price="600">Polarisé (+600)</option>
+            <option value="blue" data-price="350">Blue Block (+350)</option>
+          </select>
+        </div>
+        <div class="glass-panel p-md rounded flex-center" style="justify-content: space-between;">
+          <span>Prix Total</span>
+          <span id="custom-price" class="text-2xl font-bold">2 450 MAD</span>
+        </div>
+        <button class="btn btn-primary w-full" id="custom-add-btn">Ajouter Configuration</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CART -->
+  <section id="page-cart" class="page-section">
+    <div class="container" style="max-width: 800px;">
+      <h2 class="mb-4" style="font-size: 2rem; font-family: 'Space Grotesk';">Votre Panier</h2>
+      <div id="cart-list" class="space-y-4"></div>
+      <div class="glass-panel p-md rounded mt-6 flex-center" style="justify-content: space-between; flex-wrap: wrap;">
+        <div>
+          <div class="text-sm text-muted">Sous-total</div>
+          <div id="cart-total" class="text-2xl font-bold">0 MAD</div>
+        </div>
+        <div class="flex-center gap-sm mt-4 sm:mt-0">
+          <button class="btn btn-glass" onclick="router.go('collection')">Continuer</button>
+          <button class="btn btn-primary" onclick="router.go('checkout')">Passer Commande</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHECKOUT -->
+  <section id="page-checkout" class="page-section">
+    <div class="container grid-auto" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+      <form id="checkout-form" class="glass-panel p-md rounded space-y-4" onsubmit="handleCheckout(event)">
+        <h3 class="font-bold text-lg">Informations</h3>
+        <div class="grid-auto" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <input class="input" name="first" placeholder="Prénom" required>
+          <input class="input" name="last" placeholder="Nom" required>
+        </div>
+        <input class="input" name="email" type="email" placeholder="Email" required>
+        <input class="input" name="phone" placeholder="Téléphone" required>
+        <textarea class="input" name="address" rows="2" placeholder="Adresse complète" required></textarea>
+        <div class="grid-auto" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <input class="input" name="city" placeholder="Ville" required>
+          <input class="input" name="zip" placeholder="Code Postal">
+        </div>
+        <h3 class="font-bold text-lg mt-4">Paiement</h3>
+        <label class="flex-center gap-sm p-sm rounded border border-white/10 cursor-pointer"><input type="radio" name="pay" value="card" checked> Carte Bancaire</label>
+        <label class="flex-center gap-sm p-sm rounded border border-white/10 cursor-pointer"><input type="radio" name="pay" value="cod"> À la livraison</label>
+        <button type="submit" class="btn btn-primary w-full mt-4">Confirmer & Payer</button>
+      </form>
+      <div class="glass-panel p-md rounded h-fit">
+        <h3 class="font-bold text-lg mb-2">Récapitulatif</h3>
+        <div id="checkout-items" class="space-y-2 mb-4 max-h-48 overflow-y-auto"></div>
+        <div class="border-t border-white/10 pt-2 flex-center" style="justify-content: space-between;"><span>Total</span><span id="checkout-total" class="font-bold text-xl">0 MAD</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORDERS -->
+  <section id="page-orders" class="page-section">
+    <div class="container" style="max-width: 900px;">
+      <h2 class="mb-4" style="font-size: 2rem; font-family: 'Space Grotesk';">Mes Commandes</h2>
+      <div id="orders-list" class="space-y-4"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="page-about" class="page-section">
+    <div class="container text-center max-w-4xl">
+      <h2 class="text-gradient mb-4" style="font-size: clamp(2rem, 6vw, 3rem); font-family: 'Space Grotesk';">Notre Vision</h2>
+      <p class="text-muted text-lg leading-relaxed mb-8">OPTIC LAB fusionne artisanat marocain et technologies immersives. Chaque paire est scannée en 3D, testée optiquement, et livrée en 48h.</p>
+      <div class="grid-auto mb-8">
+        <div class="glass-panel p-md rounded"><div class="text-3xl font-bold text-gradient">98%</div><div class="text-muted mt-1">Satisfaction Client</div></div>
+        <div class="glass-panel p-md rounded"><div class="text-3xl font-bold text-gradient">48h</div><div class="text-muted mt-1">Livraison Express</div></div>
+        <div class="glass-panel p-md rounded"><div class="text-3xl font-bold text-gradient">3D</div><div class="text-muted mt-1">Essayage Virtuel</div></div>
+        <div class="glass-panel p-md rounded"><div class="text-3xl font-bold text-gradient">25+</div><div class="text-muted mt-1">Boutiques au Maroc</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="page-contact" class="page-section">
+    <div class="container grid-auto" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+      <div class="space-y-6">
+        <h2 class="font-bold text-2xl">Contactez-nous</h2>
+        <div class="glass-panel p-md rounded flex-center gap-sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div><div class="font-medium">Adresse</div><div class="text-muted text-sm">123 Blvd Mohammed VI, Casablanca</div></div></div>
+        <div class="glass-panel p-md rounded flex-center gap-sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><div><div class="font-medium">Téléphone</div><div class="text-muted text-sm">+212 5 22 00 00 00</div></div></div>
+        <div class="glass-panel p-md rounded flex-center gap-sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><div><div class="font-medium">Email</div><div class="text-muted text-sm">contact@opticlab.ma</div></div></div>
+      </div>
+      <form id="contact-form" class="glass-panel p-md rounded space-y-4" onsubmit="handleContact(event)">
+        <input class="input" name="name" placeholder="Nom Complet" required>
+        <input class="input" name="email" type="email" placeholder="Email" required>
+        <textarea class="input" name="msg" rows="4" placeholder="Message" required></textarea>
+        <button type="submit" class="btn btn-primary w-full">Envoyer</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container flex-center" style="justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
+    <div>
+      <div class="font-bold text-lg mb-2">OPTIC LAB</div>
+      <p class="text-muted text-sm max-w-xs">Lunetterie de précision. Fabrication marocaine. Technologie mondiale.</p>
+    </div>
+    <div class="flex-wrap gap-md text-sm">
+      <a href="#" class="text-muted hover:text-white transition">Mentions Légales</a>
+      <a href="#" class="text-muted hover:text-white transition">CGV</a>
+      <a href="#" class="text-muted hover:text-white transition">Politique de Retour</a>
+    </div>
+    <div class="text-muted text-sm">© 2026 OPTIC LAB. Tous droits réservés.</div>
+  </div>
+</footer>
+
+<div id="toast" class="toast"></div>
+<dialog id="ar-dialog" class="glass-panel rounded-lg p-4 max-w-lg w-full" style="top: 50%; left: 50%; translate: -50% -50%; margin: 0;">
+  <div class="flex-center" style="justify-content: space-between; margin-bottom: 1rem;"><h3 class="font-bold">Essai AR</h3><button onclick="document.getElementById('ar-dialog').close()" class="text-2xl leading-none">&times;</button></div>
+  <video id="ar-video" autoplay playsinline class="w-full rounded bg-black mb-2" style="aspect-ratio: 16/9; object-fit: cover;"></video>
+  <p class="text-center text-muted text-sm">Positionnez votre visage face à la caméra</p>
+</dialog>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ==================== MODERN APIs SIMULATION ====================
+const delay = ms => new Promise(r => setTimeout(r, ms));
+const APIs = {
+  products: async (filters = {}) => {
+    await delay(300);
+    const all = [
+      { id: 'aero-x', name: 'Aero Titanium X', price: 2450, cat: 'optical', badge: 'new', img: 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=400', rating: 4.9, reviews: 128, specs: ['Titane Grade 5', '12g', 'Verres Nanocéramiques', 'UV400'] },
+      { id: 'classic-a', name: 'Classic Acetate', price: 1850, cat: 'optical', img: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400', rating: 4.7, reviews: 89, specs: ['Acétate Italien', '18g', 'Charnières 7-Barils', 'Anti-allergène'] },
+      { id: 'sport-p', name: 'Sport Pro Vision', price: 2100, cat: 'sport', img: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400', rating: 4.8, reviews: 64, specs: ['Grilamid TR90', '22g', 'Antidérapant', 'Ventilé'] },
+      { id: 'sun-av', name: 'Sun Aviator Gold', price: 2800, cat: 'sun', badge: 'sale', img: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400', rating: 4.9, reviews: 156, specs: ['Plaqué Or 18K', 'Verres Polarized', 'Étui Cuir', 'Édition Limitée'] },
+      { id: 'cyber-l', name: 'Cyber Punk 2077', price: 3200, cat: 'luxury', img: 'https://images.unsplash.com/photo-1577803645773-f96470509666?w=400', rating: 5.0, reviews: 23, specs: ['Polycarbonate HD', 'LED Intégrées', 'Bluetooth 5.2', 'Charge USB-C'] },
+      { id: 'vintage-r', name: 'Vintage Round', price: 1650, cat: 'optical', img: 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=400', rating: 4.6, reviews: 42, specs: ['Métal Brossé', '14g', 'Plaquettes Silicone', 'Design Rétro'] }
+    ];
+    let res = all;
+    if (filters.cat && filters.cat !== 'all') res = res.filter(p => p.cat === filters.cat);
+    if (filters.sort === 'price-asc') res.sort((a,b) => a.price - b.price);
+    if (filters.sort === 'price-desc') res.sort((a,b) => b.price - a.price);
+    return res;
+  },
+  reviews: async () => {
+    await delay(200);
+    return [
+      { user: 'Amine K.', text: 'Qualité exceptionnelle, livraison rapide !', stars: 5 },
+      { user: 'Sara M.', text: 'Très léger et confortable. Je recommande.', stars: 4 },
+      { user: 'Youssef B.', text: 'Le configurateur 3D est bluffant.', stars: 5 }
+    ];
+  },
+  inventory: async () => await delay(150).then(() => ({ status: 'in_stock', qty: 12 })),
+  cart: {
+    items: JSON.parse(localStorage.getItem('optic_cart') || '[]'),
+    add: (item) => {
+      const idx = APIs.cart.items.findIndex(i => i.id === item.id && JSON.stringify(i.opts||{}) === JSON.stringify(item.opts||{}));
+      if(idx>-1) APIs.cart.items[idx].qty++; else APIs.cart.items.push({...item, qty: 1});
+      APIs.cart.save(); UI.updateCart(); toast('Ajouté au panier');
+    },
+    remove: (idx) => { APIs.cart.items.splice(idx,1); APIs.cart.save(); UI.updateCart(); },
+    save: () => localStorage.setItem('optic_cart', JSON.stringify(APIs.cart.items)),
+    clear: () => { APIs.cart.items = []; APIs.cart.save(); UI.updateCart(); }
+  },
+  orders: async () => {
+    await delay(400);
+    return JSON.parse(localStorage.getItem('optic_orders') || '[]');
+  },
+  createOrder: async (data) => {
+    await delay(800);
+    const order = { id: 'ORD-' + Math.random().toString(36).substr(2,6).toUpperCase(), date: new Date().toISOString(), items: [...APIs.cart.items], total: APIs.cart.items.reduce((s,i)=>s+(i.price*i.qty),0), status: 'pending', tracking: 'TRK'+Math.random().toString(36).substr(2,8).toUpperCase() };
+    const orders = JSON.parse(localStorage.getItem('optic_orders')||'[]'); orders.unshift(order);
+    localStorage.setItem('optic_orders', JSON.stringify(orders));
+    APIs.cart.clear();
+    return order;
+  },
+  ar: async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      document.getElementById('ar-video').srcObject = stream;
+      document.getElementById('ar-dialog').showModal();
+    } catch { toast('Caméra indisponible'); }
+  }
+};
+
+// ==================== UI & ROUTER ====================
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); };
+
+const router = {
+  routes: ['home','collection','product','customize','cart','checkout','orders','about','contact'],
+  go: (page) => {
+    window.location.hash = `#${page}`;
+    router.render();
+  },
+  render: () => {
+    const hash = window.location.hash.replace('#','') || 'home';
+    $$('.page-section').forEach(p => p.classList.remove('active'));
+    const target = $(`#page-${hash}`);
+    if(target) { target.classList.add('active'); window.scrollTo(0,0); }
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.getAttribute('href') === `#${hash}`));
+    if(hash === 'collection') UI.loadCollection();
+    if(hash === 'cart') UI.renderCart();
+    if(hash === 'checkout') UI.renderCheckout();
+    if(hash === 'orders') UI.renderOrders();
+    if(hash === 'home') UI.loadFeatured();
+    if(hash === 'customize') three.initCustomizer();
+  }
+};
+window.addEventListener('hashchange', router.render);
+
+const UI = {
+  loadFeatured: async () => {
+    const data = await APIs.products({cat:'all'});
+    $('#featured-grid').innerHTML = data.slice(0,4).map(p => UI.productCard(p)).join('');
+  },
+  loadCollection: async () => {
+    const data = await APIs.products({cat:'all', sort:'price-asc'});
+    $('#collection-grid').innerHTML = data.map(p => UI.productCard(p)).join('');
+    const cats = ['all','optical','sun','sport','luxury'];
+    $('#filters').innerHTML = cats.map(c => `<button class="filter-pill ${c==='all'?'active':''}" onclick="UI.filterCat('${c}', this)">${c==='all'?'Tous':c}</button>`).join('');
+  },
+  filterCat: async (cat, btn) => {
+    $$('.filter-pill').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+    const data = await APIs.products({cat});
+    const grid = $('#collection-grid'); grid.style.opacity = '0';
+    setTimeout(()=>{ grid.innerHTML = data.map(p => UI.productCard(p)).join(''); grid.style.opacity = '1'; }, 200);
+  },
+  productCard: p => `
+    <article class="card" onclick="router.go('product'); UI.showProduct('${p.id}')">
+      <div class="relative">
+        <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-48 object-cover">
+        ${p.badge ? `<span class="absolute top-2 left-2 badge ${p.badge==='new'?'badge-new':'badge-sale'}">${p.badge==='new'?'Nouveau':'Promo'}</span>` : ''}
+      </div>
+      <div class="p-md">
+        <h3 class="font-bold mb-1">${p.name}</h3>
+        <div class="text-muted text-sm mb-2">⭐ ${p.rating} (${p.reviews})</div>
+        <div class="flex-center" style="justify-content: space-between;">
+          <span class="font-bold text-lg">${p.price.toLocaleString()} MAD</span>
+          <button class="btn btn-glass p-sm rounded" onclick="event.stopPropagation(); APIs.cart.add({id:'${p.id}',name:'${p.name}',price:${p.price},img:'${p.img}'})">+</button>
+        </div>
+      </div>
+    </article>`,
+  showProduct: async (id) => {
+    const all = await APIs.products();
+    const p = all.find(i=>i.id===id); if(!p) return;
+    $('#prod-img').src = p.img; $('#prod-name').textContent = p.name; $('#prod-price').textContent = p.price.toLocaleString()+' MAD';
+    $('#prod-desc').textContent = `Monture haut de gamme conçue pour le confort quotidien et la performance optique.`;
+    if(p.badge) { const b = $('#prod-badge'); b.classList.remove('hidden'); b.textContent = p.badge==='new'?'Nouveau':'Promo'; } else $('#prod-badge').classList.add('hidden');
+    $('#prod-rating').innerHTML = Array(5).fill(0).map((_,i)=>`<span style="color:${i<Math.floor(p.rating)?'#f59e0b':'#4b5563'}">★</span>`).join('');
+    $('#prod-specs').innerHTML = p.specs.map(s=>`<div>• ${s}</div>`).join('');
+    const revs = await APIs.reviews();
+    $('#prod-reviews').innerHTML = revs.map(r=>`<div class="border-b border-white/10 pb-2"><div class="font-medium text-sm">${r.user} ${'★'.repeat(r.stars)}</div><div class="text-sm text-muted">${r.text}</div></div>`).join('');
+    $('#prod-add-btn').onclick = () => APIs.cart.add({id:p.id,name:p.name,price:p.price,img:p.img});
+  },
+  renderCart: () => {
+    const items = APIs.cart.items;
+    const list = $('#cart-list');
+    if(!items.length) { list.innerHTML = '<p class="text-center text-muted py-8">Votre panier est vide</p>'; $('#cart-total').textContent = '0 MAD'; return; }
+    list.innerHTML = items.map((it,i)=>`
+      <div class="glass-panel p-md rounded flex-center gap-md" style="justify-content: flex-start; flex-wrap: wrap;">
+        <img src="${it.img}" class="w-16 h-16 object-cover rounded">
+        <div class="flex-1 min-w-[150px]"><div class="font-bold">${it.name}</div><div class="text-muted text-sm">${it.price.toLocaleString()} MAD x ${it.qty}</div></div>
+        <div class="flex-center gap-sm">
+          <button class="btn-glass p-sm rounded" onclick="UI.cartQty(${i},-1)">-</button>
+          <span>${it.qty}</span>
+          <button class="btn-glass p-sm rounded" onclick="UI.cartQty(${i},1)">+</button>
+          <button class="text-red-400 p-sm" onclick="APIs.cart.remove(${i})">🗑️</button>
+        </div>
+      </div>`).join('');
+    $('#cart-total').textContent = items.reduce((s,i)=>s+(i.price*i.qty),0).toLocaleString()+' MAD';
+  },
+  cartQty: (i,d) => { APIs.cart.items[i].qty += d; if(APIs.cart.items[i].qty<1) APIs.cart.remove(i); else { APIs.cart.save(); UI.renderCart(); } },
+  renderCheckout: () => {
+    const items = APIs.cart.items;
+    $('#checkout-items').innerHTML = items.map(it=>`<div class="flex-center" style="justify-content: space-between; font-size: 0.9rem;"><span>${it.name} x${it.qty}</span><span>${(it.price*it.qty).toLocaleString()} MAD</span></div>`).join('');
+    $('#checkout-total').textContent = items.reduce((s,i)=>s+(i.price*i.qty),0).toLocaleString()+' MAD';
+  },
+  renderOrders: async () => {
+    const orders = await APIs.orders();
+    const list = $('#orders-list');
+    if(!orders.length) { list.innerHTML = '<p class="text-center text-muted py-8">Aucune commande</p>'; return; }
+    list.innerHTML = orders.map(o=>`
+      <div class="glass-panel p-md rounded">
+        <div class="flex-center" style="justify-content: space-between; flex-wrap: wrap; margin-bottom: 0.5rem;">
+          <div><div class="font-bold">${o.id}</div><div class="text-sm text-muted">${new Date(o.date).toLocaleDateString()}</div></div>
+          <span class="status-pill status-${o.status}">${o.status.toUpperCase()}</span>
+        </div>
+        <div class="text-sm text-muted">Tracking: <span class="text-white font-mono">${o.tracking}</span> | Total: ${o.total.toLocaleString()} MAD</div>
+      </div>`).join('');
+  },
+  updateCart: () => {
+    const c = APIs.cart.items.reduce((s,i)=>s+i.qty,0);
+    const b = $('#cart-badge'); b.textContent = c; b.classList.toggle('hidden', c===0);
+  }
+};
+
+// ==================== THREE.JS 3D VIEWER ====================
+const three = {
+  scene: null, camera: null, renderer: null, controls: null, glasses: null, frameMat: null, lensMat: null,
+  initHome: () => {
+    const container = $('#home-canvas'); if(!container || container.querySelector('canvas')) return;
+    three.setup(container, 0.5, 6);
+  },
+  initCustomizer: () => {
+    const container = $('#custom-canvas'); if(!container) return;
+    if(three.renderer && three.renderer.domElement.parentElement !== container) container.appendChild(three.renderer.domElement);
+    three.camera.position.set(0,0,5); three.controls.autoRotate = false;
+    if(!three.renderer) three.setup(container, 0, 5);
+  },
+  setup: (container, cx, cz) => {
+    const w = container.clientWidth, h = container.clientHeight;
+    three.scene = new THREE.Scene(); three.scene.background = new THREE.Color(0x050508);
+    three.camera = new THREE.PerspectiveCamera(45, w/h, 0.1, 100); three.camera.position.set(0,cx,cz);
+    three.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); three.renderer.setSize(w,h); three.renderer.setPixelRatio(Math.min(window.devicePixelRatio,2)); container.appendChild(three.renderer.domElement);
+    three.controls = new OrbitControls(three.camera, three.renderer.domElement); three.controls.enableDamping = true; three.controls.autoRotate = true;
+    three.scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+    const d = new THREE.DirectionalLight(0xffffff, 1.5); d.position.set(5,10,7); three.scene.add(d);
+    three.createGlasses();
+    window.addEventListener('resize', () => { const r=container.getBoundingClientRect(); three.camera.aspect=r.width/r.height; three.camera.updateProjectionMatrix(); three.renderer.setSize(r.width,r.height); });
+  },
+  createGlasses: () => {
+    three.glasses = new THREE.Group();
+    three.frameMat = new THREE.MeshPhysicalMaterial({ color: 0x1a1a1a, metalness: 0.9, roughness: 0.2, clearcoat: 1 });
+    three.lensMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 0.95, thickness: 0.5, roughness: 0, ior: 1.5, transparent: true, opacity: 0.9 });
+    const lensShape = new THREE.Shape(); lensShape.moveTo(0,0.65); lensShape.bezierCurveTo(0.85,0.65,0.85,-0.65,0,-0.65); lensShape.bezierCurveTo(-0.85,-0.65,-0.85,0.65,0,0.65);
+    const lGeo = new THREE.ExtrudeGeometry(lensShape, {depth:0.06, bevelEnabled:true, bevelThickness:0.02, bevelSize:0.02, curveSegments:20}); lGeo.center();
+    const l1 = new THREE.Mesh(lGeo, three.lensMat); l1.position.set(-0.95,0,0); l1.rotation.y=0.05;
+    const l2 = new THREE.Mesh(lGeo.clone(), three.lensMat.clone()); l2.position.set(0.95,0,0); l2.rotation.y=-0.05;
+    three.glasses.add(l1,l2);
+    const fGeo = new THREE.ExtrudeGeometry(lensShape.clone(), {depth:0.1, bevelEnabled:true, bevelThickness:0.03, bevelSize:0.03}); fGeo.center();
+    const f1 = new THREE.Mesh(fGeo, three.frameMat); f1.position.set(-0.95,0,-0.02); f1.rotation.y=0.05;
+    const f2 = new THREE.Mesh(fGeo.clone(), three.frameMat); f2.position.set(0.95,0,-0.02); f2.rotation.y=-0.05;
+    three.glasses.add(f1,f2);
+    const tCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,0), new THREE.Vector3(0.25,0.08,-0.4), new THREE.Vector3(0.35,0,-1.3), new THREE.Vector3(0.25,-0.25,-1.9)]);
+    const tGeo = new THREE.TubeGeometry(tCurve, 16, 0.035, 4, false);
+    three.glasses.add(new THREE.Mesh(tGeo, three.frameMat).translateX(-1.75).translateY(0.15));
+    three.glasses.add(new THREE.Mesh(tGeo.clone(), three.frameMat).translateX(1.75).translateY(0.15).rotateY(Math.PI));
+    three.scene.add(three.glasses);
+    three.animate();
+  },
+  animate: () => { requestAnimationFrame(three.animate); if(three.glasses) three.glasses.position.y = Math.sin(Date.now()*0.001)*0.04; three.controls?.update(); three.renderer.render(three.scene, three.camera); },
+  setColors: (f, l) => { if(three.frameMat) three.frameMat.color.setHex(f); if(three.lensMat) three.lensMat.color.setHex(l); }
+};
+
+// ==================== EVENT LISTENERS ====================
+window.toggleMobileMenu = () => $('#mobile-menu').classList.toggle('hidden');
+window.startAR = APIs.ar;
+window.handleCheckout = async e => { e.preventDefault(); if(!APIs.cart.items.length) return toast('Panier vide'); await APIs.createOrder(); toast('Commande confirmée !'); router.go('orders'); };
+window.handleContact = e => { e.preventDefault(); toast('Message envoyé !'); e.target.reset(); };
+window.addEventListener('scroll', () => $('#navbar').classList.toggle('scrolled', window.scrollY > 50));
+$('#model-select').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; $$('#model-select button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); });
+$('#color-select').addEventListener('click', e => { const b = e.target.closest('.color-orb'); if(!b) return; $$('#color-select .color-orb').forEach(x=>x.classList.remove('active')); b.classList.add('active'); APIs.cart.items = APIs.cart.items.map(i=>({...i, opts:{color: b.dataset.color}})); APIs.cart.save(); });
+$('#lens-select').addEventListener('change', e => {
+  const p = e.target.options[e.target.selectedIndex].dataset.price;
+  $('#custom-price').textContent = (2450 + parseInt(p)).toLocaleString() + ' MAD';
+});
+$('#custom-add-btn').addEventListener('click', () => {
+  const m = $('#model-select .active').dataset.model;
+  const c = $('#color-select .active').dataset.color;
+  const l = $('#lens-select').value;
+  const p = parseInt($('#custom-price').textContent.replace(/\s|MAD/g,''));
+  APIs.cart.add({id:`custom-${Date.now()}`, name:`Config ${m.toUpperCase()}`, price:p, img:'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=400', opts:{model:m, color:c, lens:l}});
+});
+
+// ==================== INIT ====================
+router.render();
+three.initHome();
+</script>
+</body>
+</html>'''
+
+# Write to file
+with open('/mnt/agents/output/optic-lab-pro.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("File saved successfully!")
+print(f"File size: {len(html_content)} characters")
